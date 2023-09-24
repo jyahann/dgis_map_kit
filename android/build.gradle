@@ -14,10 +14,13 @@ buildscript {
     }
 }
 
-allprojects {
+rootProject.allprojects {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url "https://artifactory.2gis.dev/sdk-maven-release"
+        }
     }
 }
 
@@ -46,10 +49,11 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 19
+        minSdkVersion 21
     }
 
     dependencies {
+        implementation 'ru.dgis.sdk:sdk-full:7.2.0'
         testImplementation 'org.jetbrains.kotlin:kotlin-test'
         testImplementation 'org.mockito:mockito-core:5.0.0'
     }

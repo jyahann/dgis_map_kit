@@ -1,15 +1,11 @@
 package jyahann.dgis_map_kit
 
-import androidx.annotation.NonNull
-
+import dev.flutter.example.DGisMapViewFactory
 import io.flutter.embedding.engine.plugins.FlutterPlugin
-import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
-import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import io.flutter.plugin.common.MethodChannel.Result
 
-/** DgisMapKitPlugin */
-class DgisMapKitPlugin: FlutterPlugin, MethodCallHandler {
+/** DGisMapKitPlugin */
+class DgisMapKitPlugin: FlutterPlugin {
   /// The MethodChannel that will the communication between Flutter and native Android
   ///
   /// This local reference serves to register the plugin with the Flutter Engine and unregister it
@@ -17,19 +13,10 @@ class DgisMapKitPlugin: FlutterPlugin, MethodCallHandler {
   private lateinit var channel : MethodChannel
 
   override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-    channel = MethodChannel(flutterPluginBinding.binaryMessenger, "dgis_map_kit")
-    channel.setMethodCallHandler(this)
+    flutterPluginBinding
+      .platformViewRegistry
+      .registerViewFactory("<dgis_map_view>", DGisMapViewFactory())
   }
 
-  override fun onMethodCall(call: MethodCall, result: Result) {
-    if (call.method == "getPlatformVersion") {
-      result.success("Android ${android.os.Build.VERSION.RELEASE}")
-    } else {
-      result.notImplemented()
-    }
-  }
-
-  override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-    channel.setMethodCallHandler(null)
-  }
+  override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {}
 }
