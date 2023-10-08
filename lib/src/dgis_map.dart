@@ -1,46 +1,59 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
+import 'dart:async';
+
+import 'package:dgis_map_kit/src/controller/dgis_map_controller.dart';
+import 'package:dgis_map_platform_interface/dgis_map_platform_interface.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 
-class DGisMap extends StatelessWidget {
-  final String token;
+typedef MapCreatedCallback = void Function(DGisMapController controller);
 
-  // This is used in the platform side to register the view.
-  static const String viewType = '<dgis_map_view>';
+class DGisMap extends StatefulWidget {
+  late final MapConfig mapConfig;
 
-  const DGisMap({super.key, required this.token});
+  final MapCreatedCallback? onMapCreated;
+
+  DGisMap({
+    super.key,
+    required String token,
+    this.onMapCreated,
+  }) : mapConfig = MapConfig(token: token);
+
+  @override
+  State<DGisMap> createState() => _DGisMapState();
+}
+
+class _DGisMapState extends State<DGisMap> {
+  final Completer<DGisMapController> _controller =
+      Completer<DGisMapController>();
+
+  late DGisMapPlatform _dGisMapPlatform;
+
+  @override
+  void initState() {
+    _dGisMapPlatform = DGisMapPlatform.createInstance(
+      mapConfig: widget.mapConfig,
+      widgetOptions: const MapWidgetOptions(
+        textDirection: TextDirection.ltr,
+      ),
+    );
+    // TODO: implement initState
+    super.initState();
+  }
+
+  Future<void> onPlatformViewCreated() async {
+    final controller = DGisMapController(
+      dGisMapPlatform: _dGisMapPlatform,
+    );
+    _controller.complete(controller);
+
+    if (widget.onMapCreated != null) {
+      widget.onMapCreated!(controller);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, dynamic> creationParams = <String, dynamic>{
-      'token': token,
-    };
-
-    return PlatformViewLink(
-      viewType: viewType,
-      surfaceFactory: (context, controller) {
-        return AndroidViewSurface(
-          controller: controller as AndroidViewController,
-          gestureRecognizers: const <Factory<OneSequenceGestureRecognizer>>{},
-          hitTestBehavior: PlatformViewHitTestBehavior.opaque,
-        );
-      },
-      onCreatePlatformView: (params) {
-        return PlatformViewsService.initSurfaceAndroidView(
-          id: params.id,
-          viewType: viewType,
-          layoutDirection: TextDirection.ltr,
-          creationParams: creationParams,
-          creationParamsCodec: const StandardMessageCodec(),
-          onFocus: () {
-            params.onFocusChanged(true);
-          },
-        )
-          ..addOnPlatformViewCreatedListener(params.onPlatformViewCreated)
-          ..create();
-      },
+    return _dGisMapPlatform.buildView(
+      onCreated: onPlatformViewCreated,
     );
   }
 }

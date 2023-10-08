@@ -56,6 +56,13 @@ packages:
       relative: true
     source: path
     version: "0.0.1"
+  dgis_map_platform_interface:
+    dependency: "direct overridden"
+    description:
+      path: "../dgis_map_platform_interface"
+      relative: true
+    source: path
+    version: "0.0.1"
   fake_async:
     dependency: transitive
     description:
@@ -153,14 +160,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.0"
-  plugin_platform_interface:
-    dependency: transitive
-    description:
-      name: plugin_platform_interface
-      sha256: da3fdfeccc4d4ff2da8f8c556704c08f912542c5fb3cf2233ed75372384a034d
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.1.6"
   process:
     dependency: transitive
     description:

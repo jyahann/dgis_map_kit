@@ -10,12 +10,17 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  plugin_platform_interface: ^2.0.2
+  dgis_map_platform_interface: 
+    path: ./dgis_map_platform_interface
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+
+dependency_overrides:
+  dgis_map_platform_interface:
+    path: dgis_map_platform_interface
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -2,6 +2,7 @@ package jyahann.dgis_map_kit
 
 import dev.flutter.example.DGisMapViewFactory
 import io.flutter.embedding.engine.plugins.FlutterPlugin
+import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodChannel
 
 /** DGisMapKitPlugin */
@@ -13,9 +14,10 @@ class DgisMapKitPlugin: FlutterPlugin {
   private lateinit var channel : MethodChannel
 
   override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+    val messenger : BinaryMessenger = flutterPluginBinding.binaryMessenger;
     flutterPluginBinding
       .platformViewRegistry
-      .registerViewFactory("<dgis_map_view>", DGisMapViewFactory())
+      .registerViewFactory("plugins.jyahann/dgis_map", DGisMapViewFactory(messenger))
   }
 
   override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {}

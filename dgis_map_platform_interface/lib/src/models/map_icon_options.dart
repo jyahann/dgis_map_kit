@@ -1,34 +1,38 @@
+import 'dart:ffi';
+
 import 'package:flutter/gestures.dart';
 
-class MapIcon {
-  final String? icon;
+class MapIconOptions {
   final double size;
   final String? text;
-  final int? zIndex;
+  final int zIndex;
   final Offset anchor;
 
-  const MapIcon({
-    this.icon,
+  const MapIconOptions({
     this.size = 12.0,
     this.text,
-    this.zIndex,
+    this.zIndex = 0,
     this.anchor = const Offset(0.5, 0.5),
   });
 
   Map<String, dynamic> toJson() {
     return {
-      'icon': icon,
       'size': size,
       'text': text,
       'zIndex': zIndex,
-      'anchor': anchor,
+      'anchor': {
+        "x": anchor.dx,
+        "y": anchor.dy,
+      },
     };
   }
 
-  MapIcon.fromJson(Map<String, dynamic> json)
-      : icon = json["icon"],
-        size = json["size"],
+  MapIconOptions.fromJson(Map<String, dynamic> json)
+      : size = json["size"],
         text = json["text"],
         zIndex = json["zIndex"],
-        anchor = json["anchor"];
+        anchor = Offset(
+          json["anchor"]["x"] as double,
+          json["anchor"]["y"],
+        );
 }

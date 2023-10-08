@@ -1,7 +1,7 @@
-class MapCreationParams {
+class MapConfig {
   final String token;
 
-  const MapCreationParams({
+  const MapConfig({
     required this.token,
   });
 
@@ -11,5 +11,5 @@ class MapCreationParams {
     };
   }
 
-  MapCreationParams.fromJson(Map<String, dynamic> json) : token = json["token"];
+  MapConfig.fromJson(Map<String, dynamic> json) : token = json["token"];
 }

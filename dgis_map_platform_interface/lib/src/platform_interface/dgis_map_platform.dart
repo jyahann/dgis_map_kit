@@ -1,31 +1,28 @@
 import 'package:dgis_map_platform_interface/dgis_map_platform_interface.dart';
-import 'package:dgis_map_platform_interface/src/models/map_creation_params.dart';
-import 'package:dgis_map_platform_interface/src/models/map_widget_options.dart';
-import 'package:dgis_map_platform_interface/src/models/marker.dart';
 import 'package:flutter/material.dart';
 
 typedef OnMapViewCreated = void Function();
 
 abstract class DGisMapPlatform {
-  final MapCreationParams creationParams;
+  final MapConfig mapConfig;
   final MapWidgetOptions widgetOptions;
 
   DGisMapPlatform({
-    required this.creationParams,
+    required this.mapConfig,
     required this.widgetOptions,
   });
 
   static DGisMapPlatform createInstance({
-    required MapCreationParams creationParams,
+    required MapConfig mapConfig,
     required MapWidgetOptions widgetOptions,
   }) {
     return DGisMapMethodChannel(
-      creationParams: creationParams,
+      mapConfig: mapConfig,
       widgetOptions: widgetOptions,
     );
   }
 
-  Future<void> addMarker(Marker marker);
+  Future<void> addMarkers(List<Marker> markers);
 
   Widget buildView({OnMapViewCreated? onCreated});
 }

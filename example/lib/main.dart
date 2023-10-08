@@ -25,8 +25,28 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
-        body: const DGisMap(
-          token: "token",
+        body: DGisMap(
+          token: "505d338f-975b-49e0-b4df-04c17dfa0ac3",
+          onMapCreated: (controller) {
+            controller.addMarkers(
+              const [
+                Marker(
+                  icon: "assets/map_pin.png",
+                  position: Position(
+                    lat: 51.132905927930146,
+                    long: 71.42752647399904,
+                  ),
+                ),
+                Marker(
+                  icon: "assets/map_pin.png",
+                  position: Position(
+                    lat: 51.13601624568085,
+                    long: 71.43458604812623,
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
     );

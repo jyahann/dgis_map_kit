@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:dgis_map_platform_interface/src/events/dgis_map_event.dart';
-import 'package:dgis_map_platform_interface/src/models/map_creation_params.dart';
+import 'package:dgis_map_platform_interface/src/models/map_config.dart';
 import 'package:dgis_map_platform_interface/src/models/marker.dart';
 import 'package:dgis_map_platform_interface/src/platform_interface/dgis_map_platform.dart';
 import 'package:dgis_map_platform_interface/src/utils/outgoing_methods.dart';
@@ -22,7 +22,7 @@ class DGisMapMethodChannel extends DGisMapPlatform {
   final bool useHybridComposition;
 
   DGisMapMethodChannel({
-    required super.creationParams,
+    required super.mapConfig,
     required super.widgetOptions,
     this.useHybridComposition = false,
   });
@@ -33,10 +33,10 @@ class DGisMapMethodChannel extends DGisMapPlatform {
   }
 
   @override
-  Future<void> addMarker(Marker marker) async {
+  Future<void> addMarkers(List<Marker> markers) async {
     await _channel.invokeMethod(
-      OutgoingMethods.addMarker,
-      marker.toJson(),
+      OutgoingMethods.addMarkers,
+      markers.map<Map<String, dynamic>>((marker) => marker.toJson()).toList(),
     );
   }
 
@@ -44,7 +44,7 @@ class DGisMapMethodChannel extends DGisMapPlatform {
   Widget buildView({
     OnMapViewCreated? onCreated,
   }) {
-    final Map<String, dynamic> creationParams = this.creationParams.toJson();
+    final Map<String, dynamic> creationParams = mapConfig.toJson();
     onPlatforViewCreated(int id) {
       _initChannel(id);
       if (onCreated != null) {

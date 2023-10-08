@@ -1,3 +1,3 @@
 class OutgoingMethods {
-  static String addMarker = "map#addMarker";
+  static String addMarkers = "map#addMarkers";
 }
