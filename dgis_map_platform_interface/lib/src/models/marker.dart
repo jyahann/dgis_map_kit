@@ -2,7 +2,7 @@ import 'package:dgis_map_platform_interface/src/models/map_icon_options.dart';
 import 'package:dgis_map_platform_interface/src/models/position.dart';
 
 class Marker {
-  final int? id;
+  final String? id;
   final Position position;
   final String icon;
   final MapIconOptions iconOptions;
@@ -16,20 +16,23 @@ class Marker {
     this.data,
   });
 
-  Map<String, dynamic> toJson() {
-    return {
-      "id": id,
-      "position": position.toJson(),
-      "icon": icon,
-      "iconOptions": iconOptions.toJson(),
-      "data": data,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "position": position.toJson(),
+        "icon": icon,
+        "iconOptions": iconOptions.toJson(),
+        "data": data,
+      };
 
   Marker.fromJson(Map<String, dynamic> json)
       : id = json["id"],
-        position = Position.fromJson(json["position"]),
+        position = Position.fromJson(
+          (json["position"] as Map<Object?, Object?>).cast<String, dynamic>(),
+        ),
         icon = json["icon"],
-        iconOptions = MapIconOptions.fromJson(json["iconOptions"]),
+        iconOptions = MapIconOptions.fromJson(
+          (json["iconOptions"] as Map<Object?, Object?>)
+              .cast<String, dynamic>(),
+        ),
         data = json["data"];
 }

@@ -1,5 +1,6 @@
 import 'package:dgis_map_kit/dgis_map_kit.dart';
 import 'package:flutter/material.dart';
+import 'dart:developer' as log;
 
 void main() {
   runApp(const MyApp());
@@ -25,8 +26,21 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
-        body: DGisMap(
+        body: DGisMap.withClustering(
           token: "505d338f-975b-49e0-b4df-04c17dfa0ac3",
+          clustererBuilder: (markers) => MapClusterer(
+            icon: "assets/map_pin.png",
+            iconOptions: MapIconOptions(
+                text: "${markers.length} objects",
+                textStyle: const MapIconTextStyle(
+                  fontSize: 12.0,
+                  color: Colors.white,
+                  textPlacement: MapIconTextPlacement.RIGHT_CENTER,
+                )),
+          ),
+          clusterOnTap: (markers) {
+            log.log("Cluster on tap: ${markers.length} objects");
+          },
           onMapCreated: (controller) {
             controller.addMarkers(
               const [

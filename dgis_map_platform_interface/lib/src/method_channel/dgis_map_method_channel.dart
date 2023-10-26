@@ -1,23 +1,21 @@
 import 'dart:async';
 
 import 'package:dgis_map_platform_interface/src/events/dgis_map_event.dart';
-import 'package:dgis_map_platform_interface/src/models/map_config.dart';
 import 'package:dgis_map_platform_interface/src/models/marker.dart';
 import 'package:dgis_map_platform_interface/src/platform_interface/dgis_map_platform.dart';
+import 'package:dgis_map_platform_interface/src/utils/incoming_methods.dart';
 import 'package:dgis_map_platform_interface/src/utils/outgoing_methods.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:stream_transform/stream_transform.dart';
+import 'dart:developer' as log;
 
 class DGisMapMethodChannel extends DGisMapPlatform {
   static const String _viewType = "plugins.jyahann/dgis_map";
 
   late MethodChannel _channel;
-
-  // final StreamController<MapEvent> _mapEventStreamController =
-  //     StreamController<MapEvent>.broadcast();
 
   final bool useHybridComposition;
 
@@ -26,6 +24,14 @@ class DGisMapMethodChannel extends DGisMapPlatform {
     required super.widgetOptions,
     this.useHybridComposition = false,
   });
+
+  final StreamController<MapEvent> _mapEventStreamController =
+      StreamController<MapEvent>.broadcast();
+
+  @override
+  void on<T extends MapEvent>(MapEventCallback<T> callback) {
+    _mapEventStreamController.stream.whereType<T>().listen(callback);
+  }
 
   void _initChannel(int id) {
     _channel = MethodChannel("${_viewType}_${id.toString()}");
@@ -36,9 +42,14 @@ class DGisMapMethodChannel extends DGisMapPlatform {
   Future<void> addMarkers(List<Marker> markers) async {
     await _channel.invokeMethod(
       OutgoingMethods.addMarkers,
-      markers.map<Map<String, dynamic>>((marker) => marker.toJson()).toList(),
+      OutgoingMethods.addMarkersMap(markers),
     );
   }
+
+  // @override
+  // Stream<MarkersOnTapEvent> onMarkerTap({required int mapId}) {
+  //   return _events.whereType<MarkersOnTapEvent>();
+  // }
 
   @override
   Widget buildView({
@@ -111,10 +122,46 @@ class DGisMapMethodChannel extends DGisMapPlatform {
     );
   }
 
-  Future<void> _handleMethodCall(MethodCall call) async {
-    switch (call) {
-      default:
-        throw MissingPluginException();
+  Map<String, Object?> _getArgumentDictionary(dynamic arguments) {
+    return (arguments as Map<Object?, Object?>).cast<String, Object?>();
+  }
+
+  List<Marker> _getMarkersFromArguments(dynamic arguments) {
+    List<Marker> markers = [];
+    for (var markerJson in arguments) {
+      final markerJsonDict = _getArgumentDictionary(markerJson);
+      markers.add(Marker.fromJson(markerJsonDict));
+    }
+    return markers;
+  }
+
+  Future<dynamic> _handleMethodCall(MethodCall call) async {
+    try {
+      switch (call.method) {
+        case IncomingMethods.markersOnTap:
+          final arguments = _getArgumentDictionary(call.arguments);
+          _mapEventStreamController.add(
+            MarkersOnTapEvent(
+              marker: Marker.fromJson(arguments),
+            ),
+          );
+          break;
+        case IncomingMethods.clusterRender:
+          return mapConfig.clustererBuilder!
+                  (_getMarkersFromArguments(call.arguments))
+              .toJson();
+        case IncomingMethods.clusterOnTap:
+          _mapEventStreamController.add(
+            ClusterOnTapEvent(
+              markers: _getMarkersFromArguments(call.arguments),
+            ),
+          );
+          break;
+        default:
+          throw MissingPluginException();
+      }
+    } catch (e) {
+      log.log("Error on holding DGis method call", name: e.toString());
     }
   }
 }

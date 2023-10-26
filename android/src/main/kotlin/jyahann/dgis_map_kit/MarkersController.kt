@@ -1,78 +1,42 @@
 package jyahann.dgis_map_kit
 
-import ru.dgis.sdk.coordinates.GeoPoint
-import ru.dgis.sdk.geometry.GeoPointWithElevation
-import ru.dgis.sdk.map.Anchor
-import ru.dgis.sdk.map.Image
+import io.flutter.plugin.common.MethodChannel
+import io.flutter.Log
 import ru.dgis.sdk.map.LogicalPixel
 import ru.dgis.sdk.map.MapObjectManager
 import ru.dgis.sdk.map.MapView
 import ru.dgis.sdk.map.Marker
-import ru.dgis.sdk.map.MarkerOptions
-import ru.dgis.sdk.map.ZIndex
-import ru.dgis.sdk.map.imageFromAsset
+import ru.dgis.sdk.map.Zoom
+import java.util.concurrent.CompletableFuture
 
-class MarkersController(gisView: MapView, sdkContext: ru.dgis.sdk.Context) {
-    private var gisView: MapView;
-    private var sdkContext: ru.dgis.sdk.Context
-    private var mapObjectManager: MapObjectManager? = null
+class MarkersController(
+        mapObjectManager: MapObjectManager,
+        markersUtils: MarkersUtils,
+        methodChannel: MethodChannel,
+) {
+    private var mapObjectManager: MapObjectManager
+    private var methodChannel: MethodChannel
+    private var markersUtils: MarkersUtils
 
     init {
-        this.gisView = gisView
-        this.sdkContext = sdkContext
-    }
-
-    private fun getObjectManagerAsync(callback: (objectManager: MapObjectManager) -> Unit) {
-        if (mapObjectManager != null) {
-            callback(mapObjectManager as MapObjectManager)
-        }
-
-        gisView.getMapAsync { map ->
-            mapObjectManager = MapObjectManager(map)
-            callback(mapObjectManager as MapObjectManager)
-        }
+        this.methodChannel = methodChannel
+        this.markersUtils = markersUtils
+        this.mapObjectManager = mapObjectManager
     }
 
     fun addMarkers(markers: List<Any>) {
+        val gisMarkers: MutableList<Marker> = ArrayList()
+
         for (marker in markers) {
-            addMarker(marker as Map<String, Any>)
+            gisMarkers.add(markersUtils.getMarkerFromDart(marker as Map<String, Any>))
         }
+
+        mapObjectManager.addObjects(gisMarkers)
     }
 
     fun addMarker(marker: Map<String, Any>) {
-        getObjectManagerAsync {objectManager ->
-            val iconOptions = marker["iconOptions"] as Map<String, Any>
-            var assetLookupKey = io.flutter.view.FlutterMain.getLookupKeyForAsset(marker["icon"] as String)
+        var marker = markersUtils.getMarkerFromDart(marker)
 
-            objectManager.addObject(
-                Marker(
-                    MarkerOptions(
-                        position = getPositionFromDart(marker["position"] as Map<String, Any>),
-                        icon = imageFromAsset(sdkContext,  assetLookupKey),
-                        anchor = getAnchorFromDart(iconOptions["anchor"] as Map<String, Any>),
-                        text = iconOptions["text"] as String?,
-                        zIndex = ZIndex(iconOptions["zIndex"] as Int),
-                        userData = marker["data"],
-                        iconWidth = LogicalPixel((iconOptions["size"] as Double).toFloat())
-                    )
-                )
-            )
-        }
-    }
-
-    private fun getAnchorFromDart(anchor: Map<String, Any>) : Anchor {
-        return Anchor(
-            x = (anchor["x"] as Double).toFloat(),
-            y = (anchor["y"] as Double).toFloat()
-        )
-    }
-
-    private fun getPositionFromDart(position: Map<String, Any>) : GeoPointWithElevation {
-        return GeoPointWithElevation(
-            point = GeoPoint(
-                latitude = position["lat"] as Double,
-                longitude = position["long"] as Double
-            )
-        )
+        mapObjectManager.addObject(marker)
     }
 }

@@ -1,3 +1,4 @@
+import 'package:dgis_map_kit/dgis_map_kit.dart';
 import 'package:dgis_map_platform_interface/dgis_map_platform_interface.dart';
 import 'package:flutter/foundation.dart';
 
