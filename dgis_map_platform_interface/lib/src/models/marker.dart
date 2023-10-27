@@ -5,6 +5,7 @@ class Marker {
   final String? id;
   final Position position;
   final String icon;
+  final double elevation;
   final MapIconOptions iconOptions;
   final Map<String, dynamic>? data;
 
@@ -12,6 +13,7 @@ class Marker {
     this.id,
     required this.position,
     required this.icon,
+    this.elevation = 0,
     this.iconOptions = const MapIconOptions(),
     this.data,
   });
@@ -20,6 +22,7 @@ class Marker {
         "id": id,
         "position": position.toJson(),
         "icon": icon,
+        "elevation": elevation,
         "iconOptions": iconOptions.toJson(),
         "data": data,
       };
@@ -30,6 +33,7 @@ class Marker {
           (json["position"] as Map<Object?, Object?>).cast<String, dynamic>(),
         ),
         icon = json["icon"],
+        elevation = json["elevation"],
         iconOptions = MapIconOptions.fromJson(
           (json["iconOptions"] as Map<Object?, Object?>)
               .cast<String, dynamic>(),

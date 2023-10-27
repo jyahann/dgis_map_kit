@@ -1,10 +1,7 @@
 import 'dart:async';
 
-import 'package:dgis_map_platform_interface/src/events/dgis_map_event.dart';
-import 'package:dgis_map_platform_interface/src/models/marker.dart';
-import 'package:dgis_map_platform_interface/src/platform_interface/dgis_map_platform.dart';
-import 'package:dgis_map_platform_interface/src/utils/incoming_methods.dart';
-import 'package:dgis_map_platform_interface/src/utils/outgoing_methods.dart';
+import 'package:dgis_map_platform_interface/dgis_map_platform_interface.dart';
+import 'package:dgis_map_platform_interface/src/utils/channel_methods.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -41,15 +38,34 @@ class DGisMapMethodChannel extends DGisMapPlatform {
   @override
   Future<void> addMarkers(List<Marker> markers) async {
     await _channel.invokeMethod(
-      OutgoingMethods.addMarkers,
-      OutgoingMethods.addMarkersMap(markers),
+      ChannelMethods.addMarkers,
+      markers.map<Map<String, dynamic>>((marker) => marker.toJson()).toList(),
     );
   }
 
-  // @override
-  // Stream<MarkersOnTapEvent> onMarkerTap({required int mapId}) {
-  //   return _events.whereType<MarkersOnTapEvent>();
-  // }
+  @override
+  Future<void> addMarker(Marker marker) async {
+    await _channel.invokeMethod(
+      ChannelMethods.addMarkers,
+      marker.toJson(),
+    );
+  }
+
+  @override
+  Future<void> moveCamera(
+    CameraPosition cameraPosition, {
+    Duration duration = Duration.zero,
+    CameraAnimationType animationType = CameraAnimationType.DEFAULT,
+  }) async {
+    await _channel.invokeMethod(
+      ChannelMethods.moveCamera,
+      {
+        "cameraPosition": cameraPosition.toJson(),
+        "durationInMilliseconds": duration.inMilliseconds,
+        "animationType": animationType.name,
+      },
+    );
+  }
 
   @override
   Widget buildView({
@@ -138,7 +154,15 @@ class DGisMapMethodChannel extends DGisMapPlatform {
   Future<dynamic> _handleMethodCall(MethodCall call) async {
     try {
       switch (call.method) {
-        case IncomingMethods.markersOnTap:
+        case ChannelMethods.mapOnTap:
+          final arguments = _getArgumentDictionary(call.arguments);
+          _mapEventStreamController.add(
+            MapOnTapEvent(
+              position: Position.fromJson(arguments),
+            ),
+          );
+          break;
+        case ChannelMethods.markersOnTap:
           final arguments = _getArgumentDictionary(call.arguments);
           _mapEventStreamController.add(
             MarkersOnTapEvent(
@@ -146,14 +170,22 @@ class DGisMapMethodChannel extends DGisMapPlatform {
             ),
           );
           break;
-        case IncomingMethods.clusterRender:
+        case ChannelMethods.clusterRender:
           return mapConfig.clustererBuilder!
                   (_getMarkersFromArguments(call.arguments))
               .toJson();
-        case IncomingMethods.clusterOnTap:
+        case ChannelMethods.clusterOnTap:
           _mapEventStreamController.add(
             ClusterOnTapEvent(
               markers: _getMarkersFromArguments(call.arguments),
+            ),
+          );
+          break;
+        case ChannelMethods.cameraOnMove:
+          final arguments = _getArgumentDictionary(call.arguments);
+          _mapEventStreamController.add(
+            CameraOnMoveEvent(
+              cameraPosition: CameraPosition.fromJson(arguments),
             ),
           );
           break;

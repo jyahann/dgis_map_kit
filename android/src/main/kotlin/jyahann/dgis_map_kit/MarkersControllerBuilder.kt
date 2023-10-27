@@ -6,35 +6,31 @@ import ru.dgis.sdk.map.MapView
 import ru.dgis.sdk.map.Zoom
 import java.util.concurrent.CompletableFuture
 import io.flutter.plugin.common.MethodChannel
-import io.flutter.Log
+import ru.dgis.sdk.map.Map
 
-class MarkersControllerBuilder(
-    gisView: MapView,
-    sdkContext: ru.dgis.sdk.Context,
-    methodChannel: MethodChannel,
-    isClustererEnabled: Boolean,
-) {
-    public var controller = CompletableFuture<MarkersController>()
+class MarkersControllerBuilder {
+    var controller = CompletableFuture<MarkersController>()
 
-    init {
-        gisView.getMapAsync { map ->
-            val mapObjectManager: MapObjectManager?
-            var markersUtils = MarkersUtils(sdkContext)
+    fun build(
+        map: Map,
+        gisView: MapView,
+        sdkContext: ru.dgis.sdk.Context,
+        methodChannel: MethodChannel,
+        isClustererEnabled: Boolean,
+    )  {
+        val mapObjectManager: MapObjectManager?
 
-            if (!isClustererEnabled) {
-                mapObjectManager = MapObjectManager(map)
-            } else {
-                mapObjectManager = MapObjectManager.withClustering(
-                    map,
-                    LogicalPixel(80.0f),
-                    Zoom(18.0f),
-                    ClusterRenderer(methodChannel, markersUtils),
-                )
-            }
-
-            gisView.setTouchEventsObserver(MarkersTouchEventObserver(map, methodChannel))
-
-            controller.complete(MarkersController(mapObjectManager, markersUtils, methodChannel))
+        if (!isClustererEnabled) {
+            mapObjectManager = MapObjectManager(map)
+        } else {
+            mapObjectManager = MapObjectManager.withClustering(
+                map,
+                LogicalPixel(80.0f),
+                Zoom(18.0f),
+                ClusterRenderer(methodChannel,sdkContext),
+            )
         }
+
+        controller.complete(MarkersController(sdkContext, mapObjectManager, methodChannel))
     }
 }

@@ -27,5 +27,13 @@ abstract class DGisMapPlatform {
 
   Future<void> addMarkers(List<Marker> markers);
 
+  Future<void> addMarker(Marker marker);
+
+  Future<void> moveCamera(
+    CameraPosition cameraPosition, {
+    Duration duration = Duration.zero,
+    CameraAnimationType animationType = CameraAnimationType.DEFAULT,
+  });
+
   Widget buildView({OnMapViewCreated? onCreated});
 }

@@ -21,6 +21,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    late DGisMapController _controller;
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
@@ -31,18 +32,34 @@ class _MyAppState extends State<MyApp> {
           clustererBuilder: (markers) => MapClusterer(
             icon: "assets/map_pin.png",
             iconOptions: MapIconOptions(
-                text: "${markers.length} objects",
-                textStyle: const MapIconTextStyle(
-                  fontSize: 12.0,
-                  color: Colors.white,
-                  textPlacement: MapIconTextPlacement.RIGHT_CENTER,
-                )),
+              text: "${markers.length} objects",
+              textStyle: const MapIconTextStyle(
+                fontSize: 12.0,
+                color: Colors.white,
+                textPlacement: MapIconTextPlacement.RIGHT_CENTER,
+              ),
+            ),
           ),
-          clusterOnTap: (markers) {
-            log.log("Cluster on tap: ${markers.length} objects");
-          },
+          initialCameraPosition: CameraPosition(
+            position: const Position(
+              lat: 51.169392,
+              long: 71.449074,
+            ),
+            zoom: 12,
+          ),
+          mapOnTap: (position) =>
+              log.log("Map on tap: ${position.lat} lat ${position.long} long"),
+          clusterOnTap: (markers) =>
+              log.log("Cluster on tap: ${markers.length} objects"),
+          markerOnTap: (marker) => _controller.moveCamera(
+            CameraPosition(
+              position: marker.position,
+              zoom: 18,
+            ),
+          ),
           onMapCreated: (controller) {
-            controller.addMarkers(
+            _controller = controller;
+            _controller.addMarkers(
               const [
                 Marker(
                   icon: "assets/map_pin.png",

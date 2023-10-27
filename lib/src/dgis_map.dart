@@ -5,8 +5,10 @@ import 'package:dgis_map_platform_interface/dgis_map_platform_interface.dart';
 import 'package:flutter/material.dart';
 
 typedef MapCreatedCallback = void Function(DGisMapController controller);
+typedef MapOnTapCallback = void Function(Position position);
 typedef MarkersOnTapCallback = void Function(Marker marker);
 typedef ClustersOnTapCallback = void Function(List<Marker> markers);
+typedef CameraOnMove = void Function(CameraPosition cameraPosition);
 typedef ClustererBuilder = MapClusterer Function(List<Marker> markers);
 
 // ignore: must_be_immutable
@@ -15,27 +17,41 @@ class DGisMap extends StatefulWidget {
 
   final MapCreatedCallback? onMapCreated;
 
+  final MapOnTapCallback? mapOnTap;
+
   final MarkersOnTapCallback? markerOnTap;
 
   final ClustersOnTapCallback? clusterOnTap;
 
+  final CameraOnMove? cameraOnMove;
+
   DGisMap({
     super.key,
     required String token,
+    required CameraPosition initialCameraPosition,
+    this.mapOnTap,
     this.markerOnTap,
     this.onMapCreated,
-  })  : mapConfig = MapConfig(token: token),
+    this.cameraOnMove,
+  })  : mapConfig = MapConfig(
+          token: token,
+          initialCameraPosition: initialCameraPosition,
+        ),
         clusterOnTap = null;
 
   DGisMap.withClustering({
     super.key,
     required String token,
+    required CameraPosition initialCameraPosition,
+    this.mapOnTap,
     this.markerOnTap,
     this.onMapCreated,
+    this.cameraOnMove,
     required ClustererBuilder clustererBuilder,
     this.clusterOnTap,
   }) : mapConfig = MapConfig(
           token: token,
+          initialCameraPosition: initialCameraPosition,
           clustererBuilder: clustererBuilder,
         );
 
@@ -74,11 +90,18 @@ class _DGisMapState extends State<DGisMap> {
   }
 
   void setListeners() {
+    _dGisMapPlatform.on<MapOnTapEvent>((event) {
+      if (widget.mapOnTap != null) widget.mapOnTap!(event.position);
+    });
     _dGisMapPlatform.on<MarkersOnTapEvent>((event) {
       if (widget.markerOnTap != null) widget.markerOnTap!(event.marker);
     });
     _dGisMapPlatform.on<ClusterOnTapEvent>((event) {
       if (widget.clusterOnTap != null) widget.clusterOnTap!(event.markers);
+    });
+    _dGisMapPlatform.on<CameraOnMoveEvent>((event) {
+      if (widget.cameraOnMove != null)
+        widget.cameraOnMove!(event.cameraPosition);
     });
   }
 

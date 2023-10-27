@@ -3,7 +3,6 @@ package jyahann.dgis_map_kit
 import DGisMapConfig
 import android.content.Context
 import android.view.View
-import io.flutter.Log
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -21,6 +20,7 @@ class DGisMapController(
     private var sdkContext: ru.dgis.sdk.Context
     private var methodChannel: MethodChannel
     private var markersControllerBuilder: MarkersControllerBuilder
+    private var cameraControllerBuilder: CameraControllerBuilder
 
     override fun getView(): View {
         return gisView
@@ -39,22 +39,36 @@ class DGisMapController(
                 )
         methodChannel.setMethodCallHandler(this)
 
-        markersControllerBuilder =
-            MarkersControllerBuilder(
-                        gisView,
-                        sdkContext,
-                        methodChannel,
-                        mapConfig.isClusteringEnabled,
-                )
+
+        markersControllerBuilder = MarkersControllerBuilder()
+        cameraControllerBuilder = CameraControllerBuilder()
+
+        gisView.getMapAsync { map ->
+            gisView.setTouchEventsObserver(
+                DGisMapTouchEventObserver(map, methodChannel)
+            )
+
+            cameraControllerBuilder.build(
+                map = map,
+                methodChannel = methodChannel,
+                initialCameraPosition = mapConfig.initialCameraPosition,
+            )
+
+            markersControllerBuilder.build(
+                map = map,
+                gisView = gisView,
+                sdkContext = sdkContext,
+                methodChannel = methodChannel,
+                isClustererEnabled = mapConfig.isClusteringEnabled,
+            )
+        }
     }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "map#addMarkers" -> {
-                val args = call.arguments
-
-                markersControllerBuilder.controller.get().addMarkers(args as List<Any>)
-            }
+            "map#addMarkers" -> markersControllerBuilder.controller.get().addMarkers(call.arguments as List<Any>)
+            "map#addMarker" -> markersControllerBuilder.controller.get().addMarker(call.arguments as Map<String, Any>)
+            "camera#move" -> cameraControllerBuilder.controller.get().moveCamera(call.arguments as Map<String, Any>)
         }
     }
 }
