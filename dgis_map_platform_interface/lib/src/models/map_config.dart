@@ -1,21 +1,26 @@
 import 'package:dgis_map_platform_interface/dgis_map_platform_interface.dart';
 
+enum MapTheme { light, dark }
+
 class MapConfig {
   final String token;
   final CameraPosition initialCameraPosition;
-  final MapClusterer Function(List<Marker> markers)? clustererBuilder;
+  final List<MapLayer> layers;
+  final MapTheme theme;
 
   const MapConfig({
     required this.token,
     required this.initialCameraPosition,
-    this.clustererBuilder,
+    required this.layers,
+    required this.theme,
   });
 
   Map<String, dynamic> toJson() {
     return {
       'token': token,
       'initialCameraPosition': initialCameraPosition.toJson(),
-      'isClusteringEnabled': clustererBuilder != null,
+      'layers': layers.map((layer) => layer.toJson()).toList(),
+      'theme': theme.name,
     };
   }
 }

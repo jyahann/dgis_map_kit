@@ -1,15 +1,13 @@
 import 'dart:async';
 
-import 'package:dgis_map_kit/src/controller/dgis_map_controller.dart';
+import 'package:dgis_map_kit/src/controllers/dgis_map_controller.dart';
 import 'package:dgis_map_platform_interface/dgis_map_platform_interface.dart';
 import 'package:flutter/material.dart';
 
 typedef MapCreatedCallback = void Function(DGisMapController controller);
 typedef MapOnTapCallback = void Function(Position position);
-typedef MarkersOnTapCallback = void Function(Marker marker);
-typedef ClustersOnTapCallback = void Function(List<Marker> markers);
+typedef MarkersOnTapCallback = void Function(Marker marker, String? layerId);
 typedef CameraOnMove = void Function(CameraPosition cameraPosition);
-typedef ClustererBuilder = MapClusterer Function(List<Marker> markers);
 
 // ignore: must_be_immutable
 class DGisMap extends StatefulWidget {
@@ -21,38 +19,25 @@ class DGisMap extends StatefulWidget {
 
   final MarkersOnTapCallback? markerOnTap;
 
-  final ClustersOnTapCallback? clusterOnTap;
-
   final CameraOnMove? cameraOnMove;
 
   DGisMap({
     super.key,
     required String token,
     required CameraPosition initialCameraPosition,
+    List<MapLayer> layers = const [
+      MapLayer(),
+    ],
+    MapTheme theme = MapTheme.light,
     this.mapOnTap,
     this.markerOnTap,
     this.onMapCreated,
     this.cameraOnMove,
-  })  : mapConfig = MapConfig(
-          token: token,
-          initialCameraPosition: initialCameraPosition,
-        ),
-        clusterOnTap = null;
-
-  DGisMap.withClustering({
-    super.key,
-    required String token,
-    required CameraPosition initialCameraPosition,
-    this.mapOnTap,
-    this.markerOnTap,
-    this.onMapCreated,
-    this.cameraOnMove,
-    required ClustererBuilder clustererBuilder,
-    this.clusterOnTap,
   }) : mapConfig = MapConfig(
           token: token,
           initialCameraPosition: initialCameraPosition,
-          clustererBuilder: clustererBuilder,
+          layers: layers,
+          theme: theme,
         );
 
   @override
@@ -94,14 +79,22 @@ class _DGisMapState extends State<DGisMap> {
       if (widget.mapOnTap != null) widget.mapOnTap!(event.position);
     });
     _dGisMapPlatform.on<MarkersOnTapEvent>((event) {
-      if (widget.markerOnTap != null) widget.markerOnTap!(event.marker);
+      if (widget.markerOnTap != null)
+        widget.markerOnTap!(event.marker, event.layerId);
     });
     _dGisMapPlatform.on<ClusterOnTapEvent>((event) {
-      if (widget.clusterOnTap != null) widget.clusterOnTap!(event.markers);
+      for (var layer in _dGisMapPlatform.layers) {
+        if (layer is ClustererLayer &&
+            layer.layerId == event.layerId &&
+            layer.onTap != null) {
+          layer.onTap!(event.markers, event.layerId);
+        }
+      }
     });
     _dGisMapPlatform.on<CameraOnMoveEvent>((event) {
-      if (widget.cameraOnMove != null)
+      if (widget.cameraOnMove != null) {
         widget.cameraOnMove!(event.cameraPosition);
+      }
     });
   }
 

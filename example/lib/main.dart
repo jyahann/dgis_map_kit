@@ -27,19 +27,26 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
-        body: DGisMap.withClustering(
+        body: DGisMap(
           token: "505d338f-975b-49e0-b4df-04c17dfa0ac3",
-          clustererBuilder: (markers) => MapClusterer(
-            icon: "assets/map_pin.png",
-            iconOptions: MapIconOptions(
-              text: "${markers.length} objects",
-              textStyle: const MapIconTextStyle(
-                fontSize: 12.0,
-                color: Colors.white,
-                textPlacement: MapIconTextPlacement.RIGHT_CENTER,
+          layers: [
+            MapLayer.withClustering(
+              builder: (markers) => MapClusterer(
+                icon: "assets/map_pin.png",
+                iconOptions: MapIconOptions(
+                  text: "${markers.length} objects",
+                  textStyle: const MapIconTextStyle(
+                    fontSize: 12.0,
+                    color: Colors.white,
+                    textPlacement: MapIconTextPlacement.RIGHT_CENTER,
+                  ),
+                ),
+              ),
+              onTap: (markers, layerId) => log.log(
+                "Cluster on tap: ${markers.length} objects",
               ),
             ),
-          ),
+          ],
           initialCameraPosition: CameraPosition(
             position: const Position(
               lat: 51.169392,
@@ -47,11 +54,10 @@ class _MyAppState extends State<MyApp> {
             ),
             zoom: 12,
           ),
-          mapOnTap: (position) =>
-              log.log("Map on tap: ${position.lat} lat ${position.long} long"),
-          clusterOnTap: (markers) =>
-              log.log("Cluster on tap: ${markers.length} objects"),
-          markerOnTap: (marker) => _controller.moveCamera(
+          mapOnTap: (position) => log.log(
+            "Map on tap: ${position.lat} lat ${position.long} long",
+          ),
+          markerOnTap: (marker, _) => _controller.moveCamera(
             CameraPosition(
               position: marker.position,
               zoom: 18,
@@ -59,15 +65,16 @@ class _MyAppState extends State<MyApp> {
           ),
           onMapCreated: (controller) {
             _controller = controller;
-            _controller.addMarkers(
+            _controller.markersController.addMarkers(
               const [
                 Marker(
-                  icon: "assets/map_pin.png",
-                  position: Position(
-                    lat: 51.132905927930146,
-                    long: 71.42752647399904,
-                  ),
-                ),
+                    id: "id",
+                    icon: "assets/map_pin.png",
+                    position: Position(
+                      lat: 51.132905927930146,
+                      long: 71.42752647399904,
+                    ),
+                    data: {"data": 2}),
                 Marker(
                   icon: "assets/map_pin.png",
                   position: Position(

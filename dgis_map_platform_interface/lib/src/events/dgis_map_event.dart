@@ -11,15 +11,23 @@ class MapOnTapEvent extends MapEvent {
 }
 
 class MarkersOnTapEvent extends MapEvent {
+  final String? layerId;
   final Marker marker;
 
-  const MarkersOnTapEvent({required this.marker});
+  const MarkersOnTapEvent({
+    this.layerId,
+    required this.marker,
+  });
 }
 
 class ClusterOnTapEvent extends MapEvent {
+  final String? layerId;
   final List<Marker> markers;
 
-  const ClusterOnTapEvent({required this.markers});
+  const ClusterOnTapEvent({
+    this.layerId,
+    required this.markers,
+  });
 }
 
 class CameraOnMoveEvent extends MapEvent {

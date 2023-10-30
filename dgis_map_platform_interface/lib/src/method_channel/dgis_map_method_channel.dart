@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dgis_map_platform_interface/dgis_map_platform_interface.dart';
+import 'package:dgis_map_platform_interface/src/exceptions/layer_exceptions.dart';
 import 'package:dgis_map_platform_interface/src/utils/channel_methods.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -36,19 +37,100 @@ class DGisMapMethodChannel extends DGisMapPlatform {
   }
 
   @override
-  Future<void> addMarkers(List<Marker> markers) async {
+  Future<void> addLayer(MapLayer layer) async {
+    if (layers.any((element) => element.layerId == layer.layerId)) {
+      throw LayerAlreadyExistsException(
+        message: "Layer with givien id {${layer.layerId}} already exists",
+      );
+    }
+
     await _channel.invokeMethod(
-      ChannelMethods.addMarkers,
-      markers.map<Map<String, dynamic>>((marker) => marker.toJson()).toList(),
+      layer is ClustererLayer
+          ? ChannelMethods.addLayerWithClustering
+          : ChannelMethods.addLayer,
+      layer.toJson(),
     );
+
+    layers.add(layer);
   }
 
   @override
-  Future<void> addMarker(Marker marker) async {
-    await _channel.invokeMethod(
-      ChannelMethods.addMarkers,
-      marker.toJson(),
-    );
+  Future<void> addMarkers(List<Marker> markers, [String? layerId]) async {
+    await _channel.invokeMethod(ChannelMethods.addMarkers, {
+      "layerId": layerId,
+      "markers": markers
+          .map<Map<String, dynamic>>((marker) => marker.toJson())
+          .toList(),
+    });
+  }
+
+  @override
+  Future<void> addMarker(Marker marker, [String? layerId]) async {
+    await _channel.invokeMethod(ChannelMethods.addMarker, {
+      "layerId": layerId,
+      "marker": marker.toJson(),
+    });
+  }
+
+  @override
+  Future<void> removeLayerById(String? layerId) async {
+    _checkLayerExistence(layerId);
+
+    await _channel.invokeMethod(ChannelMethods.removeLayer, {
+      "layerId": layerId,
+    });
+  }
+
+  @override
+  Future<List<Marker>> getAllMarkers([String? layerId]) async {
+    _checkLayerExistence(layerId);
+    final resp = await _channel.invokeMethod(ChannelMethods.getAllMarkers, {
+      "layerId": layerId,
+    });
+
+    return _getMarkersFromArguments(resp);
+  }
+
+  @override
+  Future<Marker?> getMarkerById(String markerId, [String? layerId]) async {
+    _checkLayerExistence(layerId);
+    final resp = await _channel.invokeMethod(ChannelMethods.getMarkerById, {
+      "layerId": layerId,
+      "markerId": markerId,
+    });
+
+    return resp != null ? Marker.fromJson(_getArgumentDictionary(resp)) : null;
+  }
+
+  @override
+  Future<void> removeAllMarkers([String? layerId]) async {
+    _checkLayerExistence(layerId);
+    await _channel.invokeMethod(ChannelMethods.removeAllMarkers, {
+      "layerId": layerId,
+    });
+  }
+
+  @override
+  Future<void> removeMarkerById(String markerId, [String? layerId]) async {
+    _checkLayerExistence(layerId);
+    await _channel.invokeMethod(ChannelMethods.removeMarkerById, {
+      "layerId": layerId,
+      "markerId": markerId,
+    });
+  }
+
+  @override
+  Future<void> update(
+    String markerId,
+    Marker newMarker, [
+    String? layerId,
+  ]) async {
+    _checkLayerExistence(layerId);
+    await _channel.invokeMethod(ChannelMethods.removeMarkerById, {
+      "layerId": layerId,
+      "markerId": markerId,
+      "newMarker": newMarker.toJson(),
+    });
   }
 
   @override
@@ -65,6 +147,14 @@ class DGisMapMethodChannel extends DGisMapPlatform {
         "animationType": animationType.name,
       },
     );
+  }
+
+  void _checkLayerExistence(String? layerId) {
+    if (!layers.any((element) => element.layerId == layerId)) {
+      throw LayerNotExistsException(
+        message: "Layer with givien id {${layerId}} not exists",
+      );
+    }
   }
 
   @override
@@ -166,18 +256,29 @@ class DGisMapMethodChannel extends DGisMapPlatform {
           final arguments = _getArgumentDictionary(call.arguments);
           _mapEventStreamController.add(
             MarkersOnTapEvent(
-              marker: Marker.fromJson(arguments),
+              layerId: call.arguments["layerId"],
+              marker: Marker.fromJson(
+                _getArgumentDictionary(
+                  arguments["data"],
+                ),
+              ),
             ),
           );
           break;
         case ChannelMethods.clusterRender:
-          return mapConfig.clustererBuilder!
-                  (_getMarkersFromArguments(call.arguments))
+          final args = _getArgumentDictionary(call.arguments);
+          final layer = layers.firstWhere(
+            (layer) => layer.layerId == args["layerId"],
+          );
+
+          return (layer as ClustererLayer)
+              .builder(_getMarkersFromArguments(args["data"]))
               .toJson();
         case ChannelMethods.clusterOnTap:
           _mapEventStreamController.add(
             ClusterOnTapEvent(
-              markers: _getMarkersFromArguments(call.arguments),
+              layerId: call.arguments["layerId"],
+              markers: _getMarkersFromArguments(call.arguments["markers"]),
             ),
           );
           break;

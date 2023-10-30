@@ -24,7 +24,6 @@ class CameraControllerBuilder {
             }
         }
 
-
         controller.complete(CameraController(map, methodChannel))
     }
 }

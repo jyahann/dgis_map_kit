@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:dgis_map_kit/dgis_map_kit.dart';
+import 'package:dgis_map_kit/src/controllers/markers_controller.dart';
 import 'package:dgis_map_platform_interface/dgis_map_platform_interface.dart';
-import 'package:flutter/foundation.dart';
 
-class DGisMapController extends ChangeNotifier {
+class DGisMapController {
+  final MarkersController markersController;
+
   final StreamController<CameraPosition> _cameraPositionStreamController =
       StreamController<CameraPosition>.broadcast();
 
@@ -18,16 +20,21 @@ class DGisMapController extends ChangeNotifier {
 
   final DGisMapPlatform _dGisMapPlatform;
 
-  DGisMapController({
-    required DGisMapPlatform dGisMapPlatform,
-  }) : _dGisMapPlatform = dGisMapPlatform;
-
-  Future<void> addMarkers(List<Marker> markers) async {
-    await _dGisMapPlatform.addMarkers(markers);
+  List<MapLayer> get layers {
+    return _dGisMapPlatform.layers;
   }
 
-  Future<void> addMarker(Marker marker) async {
-    await _dGisMapPlatform.addMarker(marker);
+  DGisMapController({
+    required DGisMapPlatform dGisMapPlatform,
+  })  : _dGisMapPlatform = dGisMapPlatform,
+        markersController = MarkersController(dGisMapPlatform: dGisMapPlatform);
+
+  Future<void> addLayer(MapLayer layer) async {
+    await _dGisMapPlatform.addLayer(layer);
+  }
+
+  Future<void> removeLayerById(String? layerId) async {
+    await _dGisMapPlatform.removeLayerById(layerId);
   }
 
   Future<void> moveCamera(

@@ -7,7 +7,14 @@ class ChannelMethods {
   static const String cameraOnMove = "camera#onMove";
 
   // outgoing
-  static const String addMarkers = "map#addMarkers";
-  static const String addMarker = "map#addMarker";
+  static const String addLayer = "map#addLayer";
+  static const String addLayerWithClustering = "map#addLayerWithClustering";
+  static const String removeLayer = "map#removeLayer";
+  static const String addMarkers = "markers#addMarkers";
+  static const String addMarker = "markers#addMarker";
+  static const String getAllMarkers = "markers#getAll";
+  static const String getMarkerById = "markers#getById";
+  static const String removeMarkerById = "markers#removeById";
+  static const String removeAllMarkers = "markers#removeAll";
   static const String moveCamera = "camera#move";
 }

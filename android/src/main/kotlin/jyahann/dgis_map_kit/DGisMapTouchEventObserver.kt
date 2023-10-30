@@ -34,7 +34,10 @@ class DGisMapTouchEventObserver(
 
                     methodChannel.invokeMethod(
                         method,
-                        mapUserData.userData
+                        mapOf (
+                            "layerId" to mapUserData.layerId,
+                            "data" to mapUserData.userData
+                        )
                     )
 
                     isObject = true

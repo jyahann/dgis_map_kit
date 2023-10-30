@@ -16,7 +16,7 @@ import ru.dgis.sdk.map.imageFromAsset
 
 class MarkersUtils {
     companion object {
-        fun getMarkerFromDart(marker: Map<String, Any>, sdkContext: ru.dgis.sdk.Context): Marker {
+        fun getMarkerFromDart(marker: Map<String, Any>, sdkContext: ru.dgis.sdk.Context, layerId: String?): Marker {
             val iconOptions = marker["iconOptions"] as Map<String, Any>
             var assetLookupKey =
                 io.flutter.view.FlutterMain.getLookupKeyForAsset(marker["icon"] as String)
@@ -37,6 +37,7 @@ class MarkersUtils {
                     MapObjectUserData(
                         type = MapObjectUserDataType.MARKER,
                         userData = marker,
+                        layerId = layerId,
                     ),
                     iconWidth = LogicalPixel((iconOptions["size"] as Double).toFloat()),
                     textStyle =
@@ -51,6 +52,7 @@ class MarkersUtils {
             mapClusterer: Map<String, Any>,
             markers: List<Any?>,
             sdkContext: ru.dgis.sdk.Context,
+            layerId: String?
         ): SimpleClusterOptions {
             val iconOptions = mapClusterer["iconOptions"] as Map<String, Any>
             var assetLookupKey =
@@ -65,6 +67,7 @@ class MarkersUtils {
                 MapObjectUserData(
                     type = MapObjectUserDataType.CLUSTER,
                     userData = markers,
+                    layerId = layerId,
                 ),
                 textStyle =
                 getTextStyleFromDart(

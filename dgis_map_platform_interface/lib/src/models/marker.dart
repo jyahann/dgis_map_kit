@@ -38,5 +38,7 @@ class Marker {
           (json["iconOptions"] as Map<Object?, Object?>)
               .cast<String, dynamic>(),
         ),
-        data = json["data"];
+        data = json["data"] == null
+            ? null
+            : (json["data"] as Map<Object?, Object?>).cast<String, dynamic>();
 }

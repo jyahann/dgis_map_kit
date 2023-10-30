@@ -5,12 +5,14 @@ enum class MapObjectUserDataType {
     CLUSTER
 }
 
-class MapObjectUserData(type: MapObjectUserDataType, userData: Any?) {
+class MapObjectUserData(type: MapObjectUserDataType, userData: Any?, layerId: String?) {
     var type: MapObjectUserDataType;
     var userData: Any?;
+    var layerId: String?;
 
     init {
         this.type = type
+        this.layerId = layerId
         this.userData = userData
     }
 }
