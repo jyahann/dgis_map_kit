@@ -13,9 +13,7 @@ class DGisMapController {
     return _dGisMapPlatform.cameraPositionStream;
   }
 
-  Future<CameraPosition> get currentCameraPosition {
-    return cameraPositionStream.last;
-  }
+  CameraPosition currentCameraPosition;
 
   List<MapLayer> get layers {
     return _dGisMapPlatform.layers;
@@ -23,8 +21,14 @@ class DGisMapController {
 
   DGisMapController({
     required DGisMapPlatform dGisMapPlatform,
+    required this.currentCameraPosition,
   })  : _dGisMapPlatform = dGisMapPlatform,
-        markersController = MarkersController(dGisMapPlatform: dGisMapPlatform);
+        markersController =
+            MarkersController(dGisMapPlatform: dGisMapPlatform) {
+    cameraPositionStream.listen(
+      (position) => currentCameraPosition = position,
+    );
+  }
 
   Future<void> addLayer(MapLayer layer) async {
     await _dGisMapPlatform.addLayer(layer);

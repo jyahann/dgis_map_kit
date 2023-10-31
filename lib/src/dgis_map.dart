@@ -72,6 +72,7 @@ class _DGisMapState extends State<DGisMap> {
     setListeners();
     final controller = DGisMapController(
       dGisMapPlatform: _dGisMapPlatform,
+      currentCameraPosition: widget.mapConfig.initialCameraPosition,
     );
     _controller.complete(controller);
 
