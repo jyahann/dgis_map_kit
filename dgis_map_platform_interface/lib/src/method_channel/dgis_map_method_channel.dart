@@ -244,6 +244,9 @@ class DGisMapMethodChannel extends DGisMapPlatform {
   Future<dynamic> _handleMethodCall(MethodCall call) async {
     try {
       switch (call.method) {
+        case ChannelMethods.mapIsReady:
+          _mapEventStreamController.add(const MapIsReadyEvent());
+          break;
         case ChannelMethods.mapOnTap:
           final arguments = _getArgumentDictionary(call.arguments);
           _mapEventStreamController.add(
@@ -278,7 +281,7 @@ class DGisMapMethodChannel extends DGisMapPlatform {
           _mapEventStreamController.add(
             ClusterOnTapEvent(
               layerId: call.arguments["layerId"],
-              markers: _getMarkersFromArguments(call.arguments["markers"]),
+              markers: _getMarkersFromArguments(call.arguments["data"]),
             ),
           );
           break;

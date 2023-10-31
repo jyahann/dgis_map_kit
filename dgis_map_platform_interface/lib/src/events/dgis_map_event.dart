@@ -4,6 +4,10 @@ abstract class MapEvent {
   const MapEvent();
 }
 
+class MapIsReadyEvent extends MapEvent {
+  const MapIsReadyEvent();
+}
+
 class MapOnTapEvent extends MapEvent {
   final Position position;
 

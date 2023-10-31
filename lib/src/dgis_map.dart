@@ -5,6 +5,7 @@ import 'package:dgis_map_platform_interface/dgis_map_platform_interface.dart';
 import 'package:flutter/material.dart';
 
 typedef MapCreatedCallback = void Function(DGisMapController controller);
+typedef MapOnReadyCallback = void Function();
 typedef MapOnTapCallback = void Function(Position position);
 typedef MarkersOnTapCallback = void Function(Marker marker, String? layerId);
 typedef CameraOnMove = void Function(CameraPosition cameraPosition);
@@ -13,7 +14,9 @@ typedef CameraOnMove = void Function(CameraPosition cameraPosition);
 class DGisMap extends StatefulWidget {
   final MapConfig mapConfig;
 
-  final MapCreatedCallback? onMapCreated;
+  final MapCreatedCallback? mapOnCreated;
+
+  final MapOnReadyCallback? mapOnReady;
 
   final MapOnTapCallback? mapOnTap;
 
@@ -31,7 +34,8 @@ class DGisMap extends StatefulWidget {
     MapTheme theme = MapTheme.light,
     this.mapOnTap,
     this.markerOnTap,
-    this.onMapCreated,
+    this.mapOnReady,
+    this.mapOnCreated,
     this.cameraOnMove,
   }) : mapConfig = MapConfig(
           token: token,
@@ -47,6 +51,8 @@ class DGisMap extends StatefulWidget {
 class _DGisMapState extends State<DGisMap> {
   final Completer<DGisMapController> _controller =
       Completer<DGisMapController>();
+
+  final Completer<bool> isMapReady = Completer<bool>();
 
   late DGisMapPlatform _dGisMapPlatform;
 
@@ -69,18 +75,25 @@ class _DGisMapState extends State<DGisMap> {
     );
     _controller.complete(controller);
 
-    if (widget.onMapCreated != null) {
-      widget.onMapCreated!(controller);
+    if (widget.mapOnCreated != null) {
+      widget.mapOnCreated!(controller);
     }
   }
 
   void setListeners() {
+    _dGisMapPlatform.on<MapIsReadyEvent>((event) {
+      if (!isMapReady.isCompleted) {
+        if (widget.mapOnReady != null) widget.mapOnReady!();
+        isMapReady.complete(true);
+      }
+    });
     _dGisMapPlatform.on<MapOnTapEvent>((event) {
       if (widget.mapOnTap != null) widget.mapOnTap!(event.position);
     });
     _dGisMapPlatform.on<MarkersOnTapEvent>((event) {
-      if (widget.markerOnTap != null)
+      if (widget.markerOnTap != null) {
         widget.markerOnTap!(event.marker, event.layerId);
+      }
     });
     _dGisMapPlatform.on<ClusterOnTapEvent>((event) {
       for (var layer in _dGisMapPlatform.layers) {

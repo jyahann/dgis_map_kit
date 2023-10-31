@@ -84,6 +84,8 @@ class DGisMapController(
                 addLayer((layer["layer"] as Map<String, String?>)["layerId"])
             }
         }
+
+        methodChannel.invokeMethod("map#isReady", null);
     }
 
     fun addLayer(layerId: String? = null) {
@@ -108,10 +110,6 @@ class DGisMapController(
                 sdkContext = this.sdkContext,
                 methodChannel = this.methodChannel,
                 layerConfig = layerConfig
-            )
-            Log.d(
-                "DGIS",
-                "Layer with clustering"
             )
         }
         markersControllerBuilders.add(markersControllerBuilder)

@@ -17,7 +17,7 @@ class CameraController(map: Map, methodChannel: MethodChannel) {
     fun moveCamera(params: kotlin.collections.Map<String, Any>) : Unit {
         map.camera.move(
             CameraUtils.getCameraPositionFromDart(params["cameraPosition"] as kotlin.collections.Map<String, Any>),
-            Duration.ofMilliseconds((params["durationInMilliseconds"] as Int).toLong()) ,
+            Duration.ofMilliseconds((params["durationInMilliseconds"] as Number).toLong()) ,
             CameraAnimationType.valueOf(params["animationType"] as String)
         )
     }

@@ -66,8 +66,7 @@ class _MyAppState extends State<MyApp> {
               zoom: 18,
             ),
           ),
-          onMapCreated: (controller) {
-            _controller = controller;
+          mapOnReady: () {
             _controller.markersController.addMarkers(
               const [
                 Marker(
@@ -87,6 +86,9 @@ class _MyAppState extends State<MyApp> {
                 ),
               ],
             );
+          },
+          mapOnCreated: (controller) {
+            _controller = controller;
           },
         ),
       ),
