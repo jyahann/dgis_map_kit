@@ -31,7 +31,7 @@ class DGisMap extends StatefulWidget {
     List<MapLayer> layers = const [
       MapLayer(),
     ],
-    MapTheme theme = MapTheme.light,
+    MapTheme theme = MapTheme.LIGHT,
     this.mapOnTap,
     this.markerOnTap,
     this.mapOnReady,

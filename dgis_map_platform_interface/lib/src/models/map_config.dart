@@ -1,6 +1,6 @@
 import 'package:dgis_map_platform_interface/dgis_map_platform_interface.dart';
 
-enum MapTheme { light, dark }
+enum MapTheme { LIGHT, DARK }
 
 class MapConfig {
   final String token;

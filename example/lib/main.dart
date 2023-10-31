@@ -50,6 +50,7 @@ class _MyAppState extends State<MyApp> {
               ),
             ),
           ],
+          theme: MapTheme.LIGHT,
           initialCameraPosition: CameraPosition(
             position: const Position(
               lat: 51.169392,
@@ -86,10 +87,6 @@ class _MyAppState extends State<MyApp> {
                 ),
               ],
             );
-            _controller.cameraPositionStream.listen((event) {
-              final s2 = _controller.currentCameraPosition;
-              final s = event;
-            });
           },
           mapOnCreated: (controller) {
             _controller = controller;

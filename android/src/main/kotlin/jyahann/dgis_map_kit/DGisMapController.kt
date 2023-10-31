@@ -39,6 +39,9 @@ class DGisMapController(
     init {
         this.sdkContext = initializeDGis(context, mapConfig.token)
         this.gisView = MapView(context)
+        if (mapConfig.theme == "LIGHT") {
+            gisView.setTheme("LIGHT")
+        }
         this.map = CompletableFuture<ru.dgis.sdk.map.Map>()
         this.mapConfig = mapConfig
         this.markersControllerBuilders = ArrayList()
@@ -57,14 +60,14 @@ class DGisMapController(
         this.map.complete(map)
 
         var controller = createSmoothMyLocationController()
-        val source = MyLocationMapObjectSource(
-            sdkContext,
-            MyLocationDirectionBehaviour.FOLLOW_SATELLITE_HEADING,
-            controller
-        )
-        map.addSource(source)
-
-        gisView.setTheme(mapConfig.theme)
+        if (mapConfig.enableMyLocation) {
+            val source = MyLocationMapObjectSource(
+                sdkContext,
+                MyLocationDirectionBehaviour.FOLLOW_SATELLITE_HEADING,
+                controller
+            )
+            map.addSource(source)
+        }
 
         gisView.setTouchEventsObserver(
             DGisMapTouchEventObserver(map, methodChannel)
