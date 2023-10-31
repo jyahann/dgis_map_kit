@@ -17,6 +17,14 @@ class DGisMapMethodChannel extends DGisMapPlatform {
 
   final bool useHybridComposition;
 
+  final StreamController<CameraPosition> _cameraPositionStreamController =
+      StreamController<CameraPosition>.broadcast();
+
+  @override
+  Stream<CameraPosition> get cameraPositionStream {
+    return _cameraPositionStreamController.stream;
+  }
+
   DGisMapMethodChannel({
     required super.mapConfig,
     required super.widgetOptions,
@@ -287,9 +295,11 @@ class DGisMapMethodChannel extends DGisMapPlatform {
           break;
         case ChannelMethods.cameraOnMove:
           final arguments = _getArgumentDictionary(call.arguments);
+          final cameraPosition = CameraPosition.fromJson(arguments);
+          _cameraPositionStreamController.add(cameraPosition);
           _mapEventStreamController.add(
             CameraOnMoveEvent(
-              cameraPosition: CameraPosition.fromJson(arguments),
+              cameraPosition: cameraPosition,
             ),
           );
           break;

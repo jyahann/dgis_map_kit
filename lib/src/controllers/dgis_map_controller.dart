@@ -7,18 +7,15 @@ import 'package:dgis_map_platform_interface/dgis_map_platform_interface.dart';
 class DGisMapController {
   final MarkersController markersController;
 
-  final StreamController<CameraPosition> _cameraPositionStreamController =
-      StreamController<CameraPosition>.broadcast();
+  final DGisMapPlatform _dGisMapPlatform;
 
   Stream<CameraPosition> get cameraPositionStream {
-    return _cameraPositionStreamController.stream;
+    return _dGisMapPlatform.cameraPositionStream;
   }
 
   Future<CameraPosition> get currentCameraPosition {
     return cameraPositionStream.last;
   }
-
-  final DGisMapPlatform _dGisMapPlatform;
 
   List<MapLayer> get layers {
     return _dGisMapPlatform.layers;
@@ -46,12 +43,6 @@ class DGisMapController {
       cameraPosition,
       duration: duration,
       animationType: animationType,
-    );
-  }
-
-  void setListeners() {
-    _dGisMapPlatform.on<CameraOnMoveEvent>(
-      (event) => _cameraPositionStreamController.add(event.cameraPosition),
     );
   }
 }

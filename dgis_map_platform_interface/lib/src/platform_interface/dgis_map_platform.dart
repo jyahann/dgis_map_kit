@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dgis_map_platform_interface/dgis_map_platform_interface.dart';
 import 'package:flutter/material.dart';
 
@@ -8,6 +10,8 @@ abstract class DGisMapPlatform {
   final MapConfig mapConfig;
   final MapWidgetOptions widgetOptions;
   List<MapLayer> layers;
+
+  Stream<CameraPosition> get cameraPositionStream;
 
   DGisMapPlatform({
     required this.mapConfig,
