@@ -38,10 +38,13 @@ class _MyAppState extends State<MyApp> {
                   textStyle: const MapIconTextStyle(
                     fontSize: 12.0,
                     color: Colors.white,
+                    strokeColor: Colors.white,
                     textPlacement: MapIconTextPlacement.RIGHT_CENTER,
                   ),
                 ),
               ),
+              maxZoom: 18.0,
+              minDistance: 80.0,
               onTap: (markers, layerId) => log.log(
                 "Cluster on tap: ${markers.length} objects",
               ),

@@ -31,16 +31,16 @@ class CameraUtils {
         ): CameraPosition {
             return CameraPosition(
                 point = getGeoPointFromDart(cameraPosition["position"] as Map<String, Any>),
-                zoom = Zoom((cameraPosition["zoom"] as Double).toFloat()),
-                tilt = Tilt((cameraPosition["tilt"] as Double).toFloat()),
-                bearing = Bearing(cameraPosition["bearing"] as Double),
+                zoom = Zoom((cameraPosition["zoom"] as Number).toFloat()),
+                tilt = Tilt((cameraPosition["tilt"] as Number).toFloat()),
+                bearing = Bearing((cameraPosition["bearing"] as Number).toDouble()),
             )
         }
 
         fun getGeoPointFromDart(position: Map<String, Any>): GeoPoint {
             return GeoPoint(
-                latitude = position["lat"] as Double,
-                longitude = position["long"] as Double
+                latitude = (position["lat"] as Number).toDouble(),
+                longitude = (position["long"] as Number).toDouble()
             )
         }
     }

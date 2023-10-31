@@ -78,18 +78,40 @@ class DGisMapController(
         )
 
         for (layer in mapConfig.layers) {
-            addLayer(layer["layerId"])
+            if (layer["isClusterer"] as Boolean) {
+                addLayerWithClustering(layer["layer"] as Map<String, Any?>)
+            } else {
+                addLayer((layer["layer"] as Map<String, String?>)["layerId"])
+            }
         }
     }
 
-    fun addLayer(layerId: String? = null, isClustererEnabled: Boolean = false) {
+    fun addLayer(layerId: String? = null) {
         var markersControllerBuilder = MarkersControllerBuilder(layerId)
         map.whenComplete { map, _ ->
             markersControllerBuilder.build(
                 map = map,
                 sdkContext = this.sdkContext,
                 methodChannel = this.methodChannel,
-                isClustererEnabled = isClustererEnabled
+            )
+        }
+        markersControllerBuilders.add(markersControllerBuilder)
+    }
+
+    fun addLayerWithClustering(layerConfig: Map<String, Any?>) {
+        var markersControllerBuilder = MarkersControllerBuilder(
+            getMethodArgument(layerConfig, "layerId")
+        )
+        map.whenComplete { map, _ ->
+            markersControllerBuilder.buildWithClustering(
+                map = map,
+                sdkContext = this.sdkContext,
+                methodChannel = this.methodChannel,
+                layerConfig = layerConfig
+            )
+            Log.d(
+                "DGIS",
+                "Layer with clustering"
             )
         }
         markersControllerBuilders.add(markersControllerBuilder)
@@ -129,7 +151,7 @@ class DGisMapController(
                     result.success(null)
                 }
                 "map#addLayerWithClustering" -> {
-                    addLayer(getMethodArgument(args, "layerId"), true)
+                    addLayerWithClustering(args as Map<String, Any?>)
                     result.success(null)
                 }
                 "map#removeLayer" -> {

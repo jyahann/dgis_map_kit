@@ -27,19 +27,18 @@ class MarkersUtils {
                             CameraUtils.getGeoPointFromDart(
                                 marker["position"] as Map<String, Any>
                             ),
-                            elevation = Elevation((marker["elevation"] as Double).toFloat())
+                            elevation = Elevation((marker["elevation"] as Number).toFloat())
                         ),
                     icon = imageFromAsset(sdkContext, assetLookupKey),
                     anchor = getAnchorFromDart(iconOptions["anchor"] as Map<String, Any>),
                     text = iconOptions["text"] as String?,
-                    zIndex = ZIndex(iconOptions["zIndex"] as Int),
-                    userData =
-                    MapObjectUserData(
+                    zIndex = ZIndex((iconOptions["zIndex"] as Number).toInt()),
+                    userData = MapObjectUserData(
                         type = MapObjectUserDataType.MARKER,
                         userData = marker,
                         layerId = layerId,
                     ),
-                    iconWidth = LogicalPixel((iconOptions["size"] as Double).toFloat()),
+                    iconWidth = LogicalPixel((iconOptions["size"] as Number).toFloat()),
                     textStyle =
                     getTextStyleFromDart(
                         iconOptions["textStyle"] as Map<String, Any>,
@@ -62,7 +61,7 @@ class MarkersUtils {
                 icon = imageFromAsset(sdkContext, assetLookupKey),
                 anchor = getAnchorFromDart(iconOptions["anchor"] as Map<String, Any>),
                 text = iconOptions["text"] as String?,
-                zIndex = ZIndex(iconOptions["zIndex"] as Int),
+                zIndex = ZIndex((iconOptions["zIndex"] as Number).toInt()),
                 userData =
                 MapObjectUserData(
                     type = MapObjectUserDataType.CLUSTER,
@@ -73,22 +72,22 @@ class MarkersUtils {
                 getTextStyleFromDart(
                     iconOptions["textStyle"] as Map<String, Any>,
                 ),
-                iconWidth = LogicalPixel((iconOptions["size"] as Double).toFloat())
+                iconWidth = LogicalPixel((iconOptions["size"] as Number).toFloat())
             )
         }
 
         fun getAnchorFromDart(anchor: Map<String, Any>): Anchor {
-            return Anchor(x = (anchor["x"] as Double).toFloat(), y = (anchor["y"] as Double).toFloat())
+            return Anchor(x = (anchor["x"] as Number).toFloat(), y = (anchor["y"] as Number).toFloat())
         }
 
         fun getTextStyleFromDart(textStyle: Map<String, Any>): TextStyle {
             return TextStyle(
-                fontSize = LogicalPixel((textStyle["fontSize"] as Double).toFloat()),
-                color = Color((textStyle["color"] as Long).toInt()),
-                strokeWidth = LogicalPixel((textStyle["strokeWidth"] as Double).toFloat()),
-                strokeColor = Color((textStyle["strokeColor"] as Long).toInt()),
+                fontSize = LogicalPixel((textStyle["fontSize"] as Number).toFloat()),
+                color = Color((textStyle["color"] as Number).toInt()),
+                strokeWidth = LogicalPixel((textStyle["strokeWidth"] as Number).toFloat()),
+                strokeColor = Color((textStyle["strokeColor"] as Number).toInt()),
                 textPlacement = TextPlacement.valueOf(textStyle["textPlacement"] as String),
-                textOffset = LogicalPixel((textStyle["textOffset"] as Double).toFloat(),),
+                textOffset = LogicalPixel((textStyle["textOffset"] as Number).toFloat(),),
             )
         }
     }

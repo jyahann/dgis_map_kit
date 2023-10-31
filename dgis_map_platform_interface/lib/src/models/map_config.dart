@@ -19,7 +19,14 @@ class MapConfig {
     return {
       'token': token,
       'initialCameraPosition': initialCameraPosition.toJson(),
-      'layers': layers.map((layer) => layer.toJson()).toList(),
+      'layers': layers
+          .map(
+            (layer) => {
+              "isClusterer": layer is ClustererLayer,
+              "layer": layer.toJson()
+            },
+          )
+          .toList(),
       'theme': theme.name,
     };
   }
