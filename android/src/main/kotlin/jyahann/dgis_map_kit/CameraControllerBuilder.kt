@@ -9,6 +9,7 @@ import java.util.concurrent.CompletableFuture
 
 class CameraControllerBuilder {
     var controller = CompletableFuture<CameraController>()
+    private lateinit var connection: AutoCloseable;
 
     fun build(
         map: Map,
@@ -16,7 +17,7 @@ class CameraControllerBuilder {
         initialCameraPosition: CameraPosition,
     ) {
         map.camera.move(initialCameraPosition, Duration.ZERO, CameraAnimationType.LINEAR).onResult { _ ->
-            map.camera.positionChannel.connect { position ->
+            this.connection = map.camera.positionChannel.connect { position ->
                 methodChannel.invokeMethod(
                     "camera#onMove",
                     CameraUtils.getCameraPositionToDart(position)

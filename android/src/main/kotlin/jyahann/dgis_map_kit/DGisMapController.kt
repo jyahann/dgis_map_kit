@@ -15,7 +15,6 @@ import ru.dgis.sdk.map.MyLocationMapObjectSource
 import ru.dgis.sdk.map.createSmoothMyLocationController
 import java.util.concurrent.CompletableFuture
 
-
 class DGisMapController(
         context: Context,
         id: Int,

@@ -37,11 +37,13 @@ class DGisMap extends StatefulWidget {
     this.mapOnReady,
     this.mapOnCreated,
     this.cameraOnMove,
+    bool enableMyLocation = false,
   }) : mapConfig = MapConfig(
           token: token,
           initialCameraPosition: initialCameraPosition,
           layers: layers,
           theme: theme,
+          enableMyLocation: enableMyLocation,
         );
 
   @override

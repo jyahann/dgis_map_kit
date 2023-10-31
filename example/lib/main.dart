@@ -86,6 +86,10 @@ class _MyAppState extends State<MyApp> {
                 ),
               ],
             );
+            _controller.cameraPositionStream.listen((event) {
+              final s2 = _controller.currentCameraPosition;
+              final s = event;
+            });
           },
           mapOnCreated: (controller) {
             _controller = controller;
