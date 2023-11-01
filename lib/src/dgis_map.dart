@@ -8,6 +8,7 @@ typedef MapCreatedCallback = void Function(DGisMapController controller);
 typedef MapOnReadyCallback = void Function();
 typedef MapOnTapCallback = void Function(Position position);
 typedef MarkersOnTapCallback = void Function(Marker marker, String? layerId);
+typedef OnUserLocationChangedCallback = void Function(Position position);
 typedef CameraOnMove = void Function(CameraPosition cameraPosition);
 
 // ignore: must_be_immutable
@@ -21,6 +22,8 @@ class DGisMap extends StatefulWidget {
   final MapOnTapCallback? mapOnTap;
 
   final MarkersOnTapCallback? markerOnTap;
+
+  final OnUserLocationChangedCallback? onUserLocationChanged;
 
   final CameraOnMove? cameraOnMove;
 
@@ -37,6 +40,7 @@ class DGisMap extends StatefulWidget {
     this.mapOnReady,
     this.mapOnCreated,
     this.cameraOnMove,
+    this.onUserLocationChanged,
     bool enableMyLocation = false,
   }) : mapConfig = MapConfig(
           token: token,
@@ -110,6 +114,11 @@ class _DGisMapState extends State<DGisMap> {
     _dGisMapPlatform.on<CameraOnMoveEvent>((event) {
       if (widget.cameraOnMove != null) {
         widget.cameraOnMove!(event.cameraPosition);
+      }
+    });
+    _dGisMapPlatform.on<UserLocationChanged>((event) {
+      if (widget.onUserLocationChanged != null) {
+        widget.onUserLocationChanged!(event.position);
       }
     });
   }

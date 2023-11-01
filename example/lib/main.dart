@@ -51,6 +51,9 @@ class _MyAppState extends State<MyApp> {
             ),
           ],
           theme: MapTheme.LIGHT,
+          enableMyLocation: true,
+          onUserLocationChanged: (position) => log
+              .log("User location changed: ${position.lat} ${position.long}"),
           initialCameraPosition: CameraPosition(
             position: const Position(
               lat: 51.169392,

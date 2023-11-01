@@ -4,6 +4,7 @@ import DGisMapConfig
 import android.content.Context
 import android.content.res.Resources.NotFoundException
 import android.view.View
+import com.example.dgis_flutter.MyLocationSource
 import io.flutter.Log
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
@@ -13,6 +14,8 @@ import ru.dgis.sdk.map.MapView
 import ru.dgis.sdk.map.MyLocationDirectionBehaviour
 import ru.dgis.sdk.map.MyLocationMapObjectSource
 import ru.dgis.sdk.map.createSmoothMyLocationController
+import ru.dgis.sdk.navigation.NavigationManager
+import ru.dgis.sdk.positioning.registerPlatformLocationSource
 import java.util.concurrent.CompletableFuture
 
 class DGisMapController(
@@ -42,6 +45,7 @@ class DGisMapController(
         if (mapConfig.theme == "LIGHT") {
             gisView.setTheme("LIGHT")
         }
+
         this.map = CompletableFuture<ru.dgis.sdk.map.Map>()
         this.mapConfig = mapConfig
         this.markersControllerBuilders = ArrayList()
@@ -51,6 +55,9 @@ class DGisMapController(
                         binaryMessenger,
                         "plugins.jyahann/dgis_map_$id",
                 )
+        if (mapConfig.enableMyLocation) {
+            registerPlatformLocationSource(sdkContext, MyLocationSource(context, methodChannel))
+        }
 
         methodChannel.setMethodCallHandler(this)
         gisView.getMapAsync(::onMapReady)
@@ -64,9 +71,11 @@ class DGisMapController(
             val source = MyLocationMapObjectSource(
                 sdkContext,
                 MyLocationDirectionBehaviour.FOLLOW_SATELLITE_HEADING,
-                controller
+                createSmoothMyLocationController()
             )
             map.addSource(source)
+            val navigationManager = NavigationManager(sdkContext)
+            navigationManager.start()
         }
 
         gisView.setTouchEventsObserver(

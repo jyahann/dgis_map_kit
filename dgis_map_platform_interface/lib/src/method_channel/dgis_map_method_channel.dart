@@ -303,6 +303,14 @@ class DGisMapMethodChannel extends DGisMapPlatform {
             ),
           );
           break;
+        case ChannelMethods.userLocationChanged:
+          final arguments = _getArgumentDictionary(call.arguments);
+          _mapEventStreamController.add(
+            UserLocationChanged(
+              position: Position.fromJson(arguments),
+            ),
+          );
+          break;
         default:
           throw MissingPluginException();
       }

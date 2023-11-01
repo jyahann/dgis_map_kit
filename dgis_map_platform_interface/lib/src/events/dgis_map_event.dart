@@ -39,3 +39,9 @@ class CameraOnMoveEvent extends MapEvent {
 
   const CameraOnMoveEvent({required this.cameraPosition});
 }
+
+class UserLocationChanged extends MapEvent {
+  final Position position;
+
+  const UserLocationChanged({required this.position});
+}
