@@ -18,6 +18,10 @@ class Marker {
   // Marker's icon options.
   final MapIconOptions iconOptions;
 
+  // Elevation in meters above
+  // the ground surface, not above sea level.
+  final double elevation;
+
   // The data that will be saved and retrieved in map events.
   final Map<String, dynamic>? data;
 
@@ -26,6 +30,7 @@ class Marker {
     required this.position,
     required this.icon,
     this.iconOptions = const MapIconOptions(),
+    this.elevation = 0.0,
     this.data,
   });
 
@@ -34,6 +39,7 @@ class Marker {
         "position": position.toJson(),
         "icon": icon,
         "iconOptions": iconOptions.toJson(),
+        'elevation': elevation,
         "data": data,
       };
 
@@ -47,6 +53,7 @@ class Marker {
           (json["iconOptions"] as Map<Object?, Object?>)
               .cast<String, dynamic>(),
         ),
+        elevation = json["elevation"],
         data = json["data"] == null
             ? null
             : (json["data"] as Map<Object?, Object?>).cast<String, dynamic>();
@@ -56,6 +63,7 @@ class Marker {
     Position? position,
     String? icon,
     MapIconOptions? iconOptions,
+    double? elevation,
     Map<String, dynamic>? Function()? data,
   }) {
     return Marker(
@@ -63,6 +71,7 @@ class Marker {
       position: position ?? this.position,
       icon: icon ?? this.icon,
       iconOptions: iconOptions ?? this.iconOptions,
+      elevation: elevation ?? this.elevation,
       data: data != null ? data() : this.data,
     );
   }

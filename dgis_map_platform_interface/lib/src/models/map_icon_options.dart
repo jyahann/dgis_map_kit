@@ -65,15 +65,16 @@ class MapIconOptions {
         iconMapDirection = json["iconMapDirection"],
         animatedAppearance = json["animatedAppearance"];
 
-  MapIconOptions copyWith(
-      {double? size,
-      String? Function()? text,
-      MapIconTextStyle? textStyle,
-      int? zIndex,
-      MapAnchor? anchor,
-      double? iconOpacity,
-      double? Function()? iconMapDirection,
-      bool? animatedAppearance}) {
+  MapIconOptions copyWith({
+    double? size,
+    String? Function()? text,
+    MapIconTextStyle? textStyle,
+    int? zIndex,
+    MapAnchor? anchor,
+    double? iconOpacity,
+    double? Function()? iconMapDirection,
+    bool? animatedAppearance,
+  }) {
     return MapIconOptions(
       size: size ?? this.size,
       text: text != null ? text() : this.text,
