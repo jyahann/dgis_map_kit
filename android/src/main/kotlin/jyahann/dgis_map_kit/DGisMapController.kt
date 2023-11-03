@@ -173,42 +173,42 @@ class DGisMapController(
                     result.success(null)
                 }
                 "markers#addMarkers" -> {
-                    var layerId = getMethodArgument<String>(args, "layerId")
+                    var layerId = getMethodArgument<String?>(args, "layerId")
                     var markers = getMethodArgument<List<Any>>(args, "markers")
                     getMarkersControllerBuilder(layerId).controller.get()
                         .addMarkers(markers)
                     result.success(null)
                 }
                 "markers#addMarker" -> {
-                    var layerId = getMethodArgument<String>(args, "layerId")
+                    var layerId = getMethodArgument<String?>(args, "layerId")
                     var marker = getMethodArgument<Map<String, Any>>(args, "marker")
                     getMarkersControllerBuilder(layerId).controller.get()
                         .addMarker(marker)
                     result.success(null)
                 }
                 "markers#getAll" -> {
-                    var layerId = getMethodArgument<String>(args, "layerId")
+                    var layerId = getMethodArgument<String?>(args, "layerId")
                     result.success(getMarkersControllerBuilder(layerId).controller.get().getAll())
                 }
                 "markers#getById" -> {
-                    var layerId = getMethodArgument<String>(args, "layerId")
+                    var layerId = getMethodArgument<String?>(args, "layerId")
                     var markerId = getMethodArgument<String>(args, "markerId")
                     var marker = getMarkersControllerBuilder(layerId).controller.get().getById(markerId)
-                    result.success((marker.userData as MapObjectUserData).userData)
+                    result.success((marker?.userData as MapObjectUserData).userData)
                 }
                 "markers#removeAll" -> {
-                    var layerId = getMethodArgument<String>(args, "layerId")
+                    var layerId = getMethodArgument<String?>(args, "layerId")
                     getMarkersControllerBuilder(layerId).controller.get().removeAll()
                     result.success(null)
                 }
                 "markers#removeById" -> {
-                    var layerId = getMethodArgument<String>(args, "layerId")
+                    var layerId = getMethodArgument<String?>(args, "layerId")
                     var markerId = getMethodArgument<String>(args, "markerId")
                     getMarkersControllerBuilder(layerId).controller.get().removeMarkerById(markerId)
                     result.success(null)
                 }
                 "markers#update" -> {
-                    var layerId = getMethodArgument<String>(args, "layerId")
+                    var layerId = getMethodArgument<String?>(args, "layerId")
                     var markerId = getMethodArgument<String>(args, "markerId")
                     var marker = getMethodArgument<Map<String, Any>>(args, "newMarker")
                     getMarkersControllerBuilder(layerId).controller.get().update(markerId, marker)

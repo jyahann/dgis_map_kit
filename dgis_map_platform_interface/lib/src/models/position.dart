@@ -1,3 +1,4 @@
+// A coordinate model with longitude and latitude.
 class Position {
   final double lat;
   final double long;
@@ -17,4 +18,14 @@ class Position {
   Position.fromJson(Map<String, dynamic> json)
       : lat = json["lat"],
         long = json["long"];
+
+  Position copyWith({
+    double? lat,
+    double? long,
+  }) {
+    return Position(
+      lat: lat ?? this.lat,
+      long: long ?? this.long,
+    );
+  }
 }

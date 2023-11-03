@@ -1,3 +1,4 @@
+// Channel method names.
 class ChannelMethods {
   // incoming
   static const String mapIsReady = "map#isReady";

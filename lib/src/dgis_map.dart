@@ -9,23 +9,41 @@ typedef MapOnReadyCallback = void Function();
 typedef MapOnTapCallback = void Function(Position position);
 typedef MarkersOnTapCallback = void Function(Marker marker, String? layerId);
 typedef OnUserLocationChangedCallback = void Function(Position position);
-typedef CameraOnMove = void Function(CameraPosition cameraPosition);
+typedef CameraOnMoveCallback = void Function(CameraPosition cameraPosition);
 
-// ignore: must_be_immutable
+// This is a simple Flutter implementation
+// of the 2Gis Map SDK, which enables
+// cross-platform map development.
 class DGisMap extends StatefulWidget {
+  // Base map configuration.
   final MapConfig mapConfig;
 
+  // Map on created callback.
+  // Executes when platform view created.
   final MapCreatedCallback? mapOnCreated;
 
+  // Map on ready callback.
+  // Executes 2Gis map initiated.
   final MapOnReadyCallback? mapOnReady;
 
+  // Map on tap callback.
+  // Triggered when clicking on a
+  // location on the map where there are no
+  // markers or clusters.
   final MapOnTapCallback? mapOnTap;
 
+  // Marker on tap callback.
+  /// Executes when user taps on [Marker].
   final MarkersOnTapCallback? markerOnTap;
 
+  // User location on change callback.
+  // Executes when user location updates.
+  // Enable only when enableMyLocation is true
   final OnUserLocationChangedCallback? onUserLocationChanged;
 
-  final CameraOnMove? cameraOnMove;
+  // Camera on move callback.
+  // Executes when camera position updates.
+  final CameraOnMoveCallback? cameraOnMove;
 
   DGisMap({
     super.key,
@@ -87,6 +105,7 @@ class _DGisMapState extends State<DGisMap> {
     }
   }
 
+  // Transfers events to callbacks
   void setListeners() {
     _dGisMapPlatform.on<MapIsReadyEvent>((event) {
       if (!isMapReady.isCompleted) {

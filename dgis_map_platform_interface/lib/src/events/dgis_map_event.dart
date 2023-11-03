@@ -1,5 +1,6 @@
 import 'package:dgis_map_platform_interface/dgis_map_platform_interface.dart';
 
+// Map events.
 abstract class MapEvent {
   const MapEvent();
 }

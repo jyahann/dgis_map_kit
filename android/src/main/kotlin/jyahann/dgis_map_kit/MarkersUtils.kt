@@ -6,8 +6,10 @@ import ru.dgis.sdk.geometry.GeoPointWithElevation
 import ru.dgis.sdk.map.Anchor
 import ru.dgis.sdk.map.Color
 import ru.dgis.sdk.map.LogicalPixel
+import ru.dgis.sdk.map.MapDirection
 import ru.dgis.sdk.map.Marker
 import ru.dgis.sdk.map.MarkerOptions
+import ru.dgis.sdk.map.Opacity
 import ru.dgis.sdk.map.SimpleClusterOptions
 import ru.dgis.sdk.map.TextPlacement
 import ru.dgis.sdk.map.TextStyle
@@ -16,7 +18,7 @@ import ru.dgis.sdk.map.imageFromAsset
 
 class MarkersUtils {
     companion object {
-        fun getMarkerFromDart(marker: Map<String, Any>, sdkContext: ru.dgis.sdk.Context, layerId: String?): Marker {
+        fun getMarkerFromDart(marker: Map<String, Any?>, sdkContext: ru.dgis.sdk.Context, layerId: String?): Marker {
             val iconOptions = marker["iconOptions"] as Map<String, Any>
             var assetLookupKey =
                 io.flutter.view.FlutterMain.getLookupKeyForAsset(marker["icon"] as String)
@@ -38,6 +40,9 @@ class MarkersUtils {
                         userData = marker,
                         layerId = layerId,
                     ),
+                    iconMapDirection = getMapDirectionFromDart(iconOptions["iconMapDirection"]),
+                    iconOpacity = Opacity((iconOptions["iconOpacity"] as Number).toFloat()),
+                    animatedAppearance = iconOptions["animatedAppearance"] as Boolean,
                     iconWidth = LogicalPixel((iconOptions["size"] as Number).toFloat()),
                     textStyle =
                     getTextStyleFromDart(
@@ -48,7 +53,7 @@ class MarkersUtils {
         }
 
         fun getClusterOptionsFromDart(
-            mapClusterer: Map<String, Any>,
+            mapClusterer: Map<String, Any?>,
             markers: List<Any?>,
             sdkContext: ru.dgis.sdk.Context,
             layerId: String?
@@ -68,12 +73,22 @@ class MarkersUtils {
                     userData = markers,
                     layerId = layerId,
                 ),
+                iconMapDirection = getMapDirectionFromDart(iconOptions["iconMapDirection"]),
+                iconOpacity = Opacity((iconOptions["iconOpacity"] as Number).toFloat()),
+                animatedAppearance = iconOptions["animatedAppearance"] as Boolean,
                 textStyle =
                 getTextStyleFromDart(
                     iconOptions["textStyle"] as Map<String, Any>,
                 ),
                 iconWidth = LogicalPixel((iconOptions["size"] as Number).toFloat())
             )
+        }
+
+        fun getMapDirectionFromDart(value: Any?): MapDirection? {
+            if (value == null) {
+                return null;
+            }
+            return MapDirection(value = (value as Number).toDouble())
         }
 
         fun getAnchorFromDart(anchor: Map<String, Any>): Anchor {

@@ -6,4 +6,5 @@ export './position.dart';
 export './map_clusterer.dart';
 export './map_icon_text_style.dart';
 export './camera_position.dart';
+export './map_anchor.dart';
 export 'map_layer.dart';

@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:dgis_map_kit/dgis_map_kit.dart';
+import 'package:dgis_map_kit_example/camera_control_buttons.dart';
+import 'package:dgis_map_kit_example/map_navigation.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as log;
 
@@ -14,6 +18,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  static const Color primaryColor = Color(0xff11C775);
+
   @override
   void initState() {
     super.initState();
@@ -22,78 +28,153 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     late DGisMapController _controller;
+    final Completer<bool> _isMapReadyCompleter = Completer();
+
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: DGisMap(
-          token: "505d338f-975b-49e0-b4df-04c17dfa0ac3",
-          layers: [
-            MapLayer.withClustering(
-              builder: (markers) => MapClusterer(
-                icon: "assets/map_pin.png",
-                iconOptions: MapIconOptions(
-                  text: "${markers.length} objects",
-                  textStyle: const MapIconTextStyle(
-                    fontSize: 12.0,
-                    color: Colors.white,
-                    strokeColor: Colors.white,
-                    textPlacement: MapIconTextPlacement.RIGHT_CENTER,
+        body: Stack(
+          alignment: Alignment.centerRight,
+          children: [
+            SizedBox(
+              width: double.infinity,
+              height: double.infinity,
+              child: DGisMap(
+                token: "505d338f-975b-49e0-b4df-04c17dfa0ac3",
+                layers: [
+                  MapLayer.withClustering(
+                    builder: (markers) => MapClusterer(
+                      icon: "assets/map_cluster_pin.png",
+                      iconOptions: MapIconOptions(
+                        text: markers.length.toString(),
+                        textStyle: const MapIconTextStyle(
+                          fontSize: 13.0,
+                          color: primaryColor,
+                          strokeColor: primaryColor,
+                          textPlacement: MapIconTextPlacement.TOP_CENTER,
+                          textOffset: -20.0,
+                        ),
+                      ),
+                    ),
+                    maxZoom: 20.0,
+                    minDistance: 100.0,
+                    onTap: (markers, _) async {
+                      final cameraPosition = _controller.currentCameraPosition;
+                      final landmark = markers.first;
+
+                      _controller.moveCamera(
+                        CameraPosition(
+                          position: landmark.position,
+                          zoom: cameraPosition.zoom + 2,
+                        ),
+                        duration: const Duration(milliseconds: 300),
+                        animationType: CameraAnimationType.DEFAULT,
+                      );
+                    },
                   ),
+                ],
+                theme: MapTheme.DARK,
+                enableMyLocation: true,
+                onUserLocationChanged: (position) => log.log(
+                  "User location changed: ${position.lat} ${position.long}",
                 ),
+                initialCameraPosition: CameraPosition(
+                  position: const Position(
+                    lat: 51.169392,
+                    long: 71.449074,
+                  ),
+                  zoom: 12,
+                ),
+                mapOnTap: (position) {
+                  _controller.markersController.removeById(
+                    "user_marker",
+                    "user_markers",
+                  );
+
+                  _controller.moveCamera(
+                    CameraPosition(position: position, zoom: 18.0),
+                    duration: const Duration(milliseconds: 400),
+                    animationType: CameraAnimationType.SHOW_BOTH_POSITIONS,
+                  );
+
+                  _controller.markersController.addMarkers(
+                    [
+                      Marker(
+                        id: "user_marker",
+                        position: position,
+                        icon: "assets/map_pin.png",
+                      )
+                    ],
+                  );
+                },
+                markerOnTap: (marker, _) => _controller.moveCamera(
+                  CameraPosition(
+                    position: marker.position,
+                    zoom: 18,
+                  ),
+                  duration: const Duration(milliseconds: 600),
+                ),
+                mapOnReady: () {
+                  _isMapReadyCompleter.complete(true);
+
+                  _controller.markersController.addMarkers(
+                    const [
+                      Marker(
+                        id: "id",
+                        icon: "assets/map_pin.png",
+                        position: Position(
+                          lat: 51.132905927930146,
+                          long: 71.42752647399904,
+                        ),
+                        data: {"data": 2},
+                      ),
+                      Marker(
+                        icon: "assets/map_pin.png",
+                        position: Position(
+                          lat: 51.13601624568085,
+                          long: 71.43458604812623,
+                        ),
+                      ),
+                      Marker(
+                        icon: "assets/map_pin.png",
+                        position: Position(
+                          lat: 51.13601628568085,
+                          long: 71.43659604812623,
+                        ),
+                      ),
+                    ],
+                  );
+
+                  _controller.addLayer(const MapLayer(layerId: "user_markers"));
+                },
+                mapOnCreated: (controller) {
+                  _controller = controller;
+                },
               ),
-              maxZoom: 18.0,
-              minDistance: 80.0,
-              onTap: (markers, layerId) => log.log(
-                "Cluster on tap: ${markers.length} objects",
+            ),
+            FutureBuilder(
+              future: _isMapReadyCompleter.future,
+              builder: (context, snapshot) {
+                if (snapshot.hasData && snapshot.data == true) {
+                  return MapNavigation(mapController: _controller);
+                }
+                return const SizedBox.shrink();
+              },
+            ),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: FutureBuilder(
+                future: _isMapReadyCompleter.future,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData && snapshot.data == true) {
+                    return CameraControllButtons(mapController: _controller);
+                  }
+                  return const SizedBox.shrink();
+                },
               ),
             ),
           ],
-          theme: MapTheme.LIGHT,
-          enableMyLocation: true,
-          onUserLocationChanged: (position) => log
-              .log("User location changed: ${position.lat} ${position.long}"),
-          initialCameraPosition: CameraPosition(
-            position: const Position(
-              lat: 51.169392,
-              long: 71.449074,
-            ),
-            zoom: 12,
-          ),
-          mapOnTap: (position) => log.log(
-            "Map on tap: ${position.lat} lat ${position.long} long",
-          ),
-          markerOnTap: (marker, _) => _controller.moveCamera(
-            CameraPosition(
-              position: marker.position,
-              zoom: 18,
-            ),
-          ),
-          mapOnReady: () {
-            _controller.markersController.addMarkers(
-              const [
-                Marker(
-                    id: "id",
-                    icon: "assets/map_pin.png",
-                    position: Position(
-                      lat: 51.132905927930146,
-                      long: 71.42752647399904,
-                    ),
-                    data: {"data": 2}),
-                Marker(
-                  icon: "assets/map_pin.png",
-                  position: Position(
-                    lat: 51.13601624568085,
-                    long: 71.43458604812623,
-                  ),
-                ),
-              ],
-            );
-          },
-          mapOnCreated: (controller) {
-            _controller = controller;
-          },
         ),
       ),
     );

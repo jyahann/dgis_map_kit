@@ -61,9 +61,10 @@ class ClusterRenderResult(sdkContext: ru.dgis.sdk.Context, markers: List<Any?>, 
     override fun error(errorCode: String, errorMessage: String?, errorDetails: Any?): Unit {}
 
     override fun success(result: Any?): Unit {
+
         completableClusterOptions.complete(
                 MarkersUtils.getClusterOptionsFromDart(
-                        result as Map<String, Any>,
+                        result as Map<String, Any?>,
                         markers,
                         sdkContext,
                         layerId

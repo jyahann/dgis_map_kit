@@ -21,12 +21,36 @@ enum MapIconTextPlacement {
   CENTER_CENTER
 }
 
+// Text appearance settings.
 class MapIconTextStyle {
+  // Label font size.
   final double fontSize;
+
+  // Label color.
   final Color color;
+
+  // Label stroke width.
   final double strokeWidth;
+
+  // Label stroke color.
   final Color strokeColor;
+
+  //    The options for label position relative to the
+  //  icon. The position is determined as follows:
+
+  //    The first part of the enum denotes the area
+  //  relative to which the label position is defined:
+  //  A. "Circle" - means it considers a circle around the marker.
+  //  B. An empty string - means it considers a square.
+
+  //    The second part of the enum defines the zone
+  //  within the area around the marker.
+
+  //    The third part of the enum determines the label's
+  //  placement inside the zone.
   final MapIconTextPlacement textPlacement;
+
+  // Label offset relative to the icon
   final double textOffset;
 
   const MapIconTextStyle({
@@ -55,4 +79,22 @@ class MapIconTextStyle {
         "textPlacement": textPlacement.name,
         "textOffset": textOffset,
       };
+
+  MapIconTextStyle copyWith({
+    double? fontSize,
+    Color? color,
+    double? strokeWidth,
+    Color? strokeColor,
+    MapIconTextPlacement? textPlacement,
+    double? textOffset,
+  }) {
+    return MapIconTextStyle(
+      fontSize: fontSize ?? this.fontSize,
+      color: color ?? this.color,
+      strokeWidth: strokeWidth ?? this.strokeWidth,
+      strokeColor: strokeColor ?? this.strokeColor,
+      textPlacement: textPlacement ?? this.textPlacement,
+      textOffset: textOffset ?? this.textOffset,
+    );
+  }
 }

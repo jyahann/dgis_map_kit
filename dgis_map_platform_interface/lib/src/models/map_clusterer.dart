@@ -1,8 +1,14 @@
 import 'package:dgis_map_platform_interface/dgis_map_platform_interface.dart';
 
+// Cluster model with its configuration.
 class MapClusterer {
+  // Cluster's icon based on its asset.
   final String? icon;
+
+  // Cluster's icon options.
   final MapIconOptions iconOptions;
+
+  // Getting and setting the cluster appearance animation flag.
   final bool isAnimated;
 
   const MapClusterer({

@@ -1,5 +1,6 @@
 package jyahann.dgis_map_kit
 
+import io.flutter.Log
 import io.flutter.plugin.common.MethodChannel
 import ru.dgis.sdk.map.MapObjectManager
 import ru.dgis.sdk.map.Marker
@@ -29,14 +30,27 @@ class MarkersController(
         val gisMarkers: MutableList<Marker> = ArrayList()
 
         for (marker in markers) {
-            gisMarkers.add(MarkersUtils.getMarkerFromDart(marker as Map<String, Any>, this.sdkContext, layerId))
+            _deleteMarkerIfExists(marker as Map<String, Any?>)
+            gisMarkers.add(MarkersUtils.getMarkerFromDart(marker, this.sdkContext, layerId))
         }
 
         this.gisMarkers.addAll(gisMarkers)
         mapObjectManager.addObjects(gisMarkers)
     }
 
-    fun addMarker(marker: Map<String, Any>) {
+    private fun _deleteMarkerIfExists(marker: Map<String, Any?>) {
+        val markerId = marker["id"] as String?
+        if (markerId != null) {
+            val marker = getById(markerId)
+            if (marker != null) {
+                mapObjectManager.removeObject(marker)
+                gisMarkers.remove(marker)
+            }
+        }
+    }
+
+    fun addMarker(marker: Map<String, Any?>) {
+        _deleteMarkerIfExists(marker)
         var marker = MarkersUtils.getMarkerFromDart(marker, this.sdkContext, layerId)
 
         gisMarkers.add(marker)
@@ -48,14 +62,21 @@ class MarkersController(
         return gisMarkers.map { marker -> (marker.userData as MapObjectUserData).userData }
     }
 
-    fun getById(markerId: String) : Marker {
-        return gisMarkers.first { marker -> ((marker.userData as MapObjectUserData).userData as Map<String, Any?>)["id"] as String == markerId }
+    fun getById(markerId: String) : Marker? {
+        return gisMarkers.firstOrNull() { marker -> ((marker.userData as MapObjectUserData).userData as Map<String, Any?>)["id"] as String? == markerId }
     }
 
     fun removeMarkerById(markerId: String) {
         val marker = getById(markerId)
-        mapObjectManager.removeObject(marker)
-        gisMarkers.remove(marker)
+        if (marker != null) {
+            mapObjectManager.removeObject(marker)
+            gisMarkers.remove(marker)
+        } else {
+            Log.d(
+                "DGIS",
+                "Marker on  remove: marker with given id ($markerId) isn't exists"
+            )
+        }
     }
     fun removeAll() {
         mapObjectManager.removeAll()
