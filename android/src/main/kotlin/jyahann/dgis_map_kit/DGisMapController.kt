@@ -43,7 +43,7 @@ class DGisMapController(
         this.sdkContext = initializeDGis(context, mapConfig.token)
         this.gisView = MapView(context)
         if (mapConfig.theme == "LIGHT") {
-            gisView.setTheme("LIGHT")
+            gisView.setTheme("day")
         }
 
         this.map = CompletableFuture<ru.dgis.sdk.map.Map>()
@@ -181,7 +181,7 @@ class DGisMapController(
                 }
                 "markers#addMarker" -> {
                     var layerId = getMethodArgument<String?>(args, "layerId")
-                    var marker = getMethodArgument<Map<String, Any>>(args, "marker")
+                    var marker = getMethodArgument<Map<String, Any?>>(args, "marker")
                     getMarkersControllerBuilder(layerId).controller.get()
                         .addMarker(marker)
                     result.success(null)
@@ -210,7 +210,7 @@ class DGisMapController(
                 "markers#update" -> {
                     var layerId = getMethodArgument<String?>(args, "layerId")
                     var markerId = getMethodArgument<String>(args, "markerId")
-                    var marker = getMethodArgument<Map<String, Any>>(args, "newMarker")
+                    var marker = getMethodArgument<Map<String, Any?>>(args, "newMarker")
                     getMarkersControllerBuilder(layerId).controller.get().update(markerId, marker)
                     result.success(null)
                 }

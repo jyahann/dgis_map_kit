@@ -82,7 +82,7 @@ class MarkersController(
         mapObjectManager.removeAll()
     }
 
-    fun update(markerId: String, newMarker: Map<String, Any>) {
+    fun update(markerId: String, newMarker: Map<String, Any?>) {
         removeMarkerById(markerId)
         addMarker(newMarker)
     }
