@@ -51,8 +51,8 @@ class DGisMapMethodChannel extends DGisMapPlatform {
 
   /// Basic [MapEvent] bus
   @override
-  void on<T extends MapEvent>(MapEventCallback<T> callback) {
-    _mapEventStreamController.stream.whereType<T>().listen(callback);
+  StreamSubscription<T> on<T extends MapEvent>(MapEventCallback<T> callback) {
+    return _mapEventStreamController.stream.whereType<T>().listen(callback);
   }
 
   /// Initiate [_channel]
@@ -345,14 +345,6 @@ class DGisMapMethodChannel extends DGisMapPlatform {
           _mapEventStreamController.add(
             CameraOnMoveEvent(
               cameraPosition: cameraPosition,
-            ),
-          );
-          break;
-        case ChannelMethods.userLocationChanged:
-          final arguments = _getArgumentDictionary(call.arguments);
-          _mapEventStreamController.add(
-            UserLocationChanged(
-              position: Position.fromJson(arguments),
             ),
           );
           break;

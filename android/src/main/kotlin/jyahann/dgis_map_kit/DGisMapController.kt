@@ -11,11 +11,7 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.platform.PlatformView
 import ru.dgis.sdk.map.MapView
-import ru.dgis.sdk.map.MyLocationDirectionBehaviour
-import ru.dgis.sdk.map.MyLocationMapObjectSource
-import ru.dgis.sdk.map.createSmoothMyLocationController
 import ru.dgis.sdk.navigation.NavigationManager
-import ru.dgis.sdk.positioning.registerPlatformLocationSource
 import java.util.concurrent.CompletableFuture
 
 class DGisMapController(
@@ -67,17 +63,6 @@ class DGisMapController(
         this.map.complete(map)
 
         var controller = createSmoothMyLocationController()
-        if (mapConfig.enableMyLocation) {
-            val source = MyLocationMapObjectSource(
-                sdkContext,
-                MyLocationDirectionBehaviour.FOLLOW_SATELLITE_HEADING,
-                createSmoothMyLocationController()
-            )
-            map.addSource(source)
-            val navigationManager = NavigationManager(sdkContext)
-            navigationManager.start()
-        }
-
         gisView.setTouchEventsObserver(
             DGisMapTouchEventObserver(map, methodChannel)
         )

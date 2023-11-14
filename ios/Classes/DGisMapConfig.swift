@@ -5,7 +5,6 @@ class DGisMapConfig {
      var initialCameraPosition: CameraPosition;
      var layers: Array<Dictionary<String, Any?>>;
      var theme: String;
-     var enableMyLocation: Bool;
 
      init (
          arguments args: Dictionary<String?, Any?>
@@ -16,6 +15,5 @@ class DGisMapConfig {
          );
          self.layers = (args["layers"] as! Array<Any>).map{$0 as! Dictionary<String, Any?>}
          self.theme = args["theme"] as! String;
-         self.enableMyLocation = args["enableMyLocation"] as! Bool;
      }
  }

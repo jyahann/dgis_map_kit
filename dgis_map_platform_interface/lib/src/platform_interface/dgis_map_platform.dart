@@ -26,7 +26,7 @@ abstract class DGisMapPlatform {
   });
 
   /// Basic [MapEvent] bus
-  void on<T extends MapEvent>(MapEventCallback<T> callback);
+  StreamSubscription<T> on<T extends MapEvent>(MapEventCallback<T> callback);
 
   /// Create instance of [DGisMapPlatform]
   static DGisMapPlatform createInstance({

@@ -30,6 +30,8 @@ class _MyAppState extends State<MyApp> {
     late DGisMapController _controller;
     final Completer<bool> _isMapReadyCompleter = Completer();
 
+    log.log("starting example");
+
     return MaterialApp(
       home: Scaffold(
         body: Stack(
@@ -73,10 +75,14 @@ class _MyAppState extends State<MyApp> {
                   ),
                 ],
                 theme: MapTheme.DARK,
-                enableMyLocation: true,
-                onUserLocationChanged: (position) => log.log(
-                  "User location changed: ${position.lat} ${position.long}",
-                ),
+                enableUserLocation: true,
+                onUserLocationChanged: (position) {
+                  log.log(
+                    "User location changed: ${position.lat} ${position.long}",
+                  );
+                  
+                  return Marker(position: position, icon: "assets/user_location.png");
+                },
                 initialCameraPosition: CameraPosition(
                   position: const Position(
                     lat: 51.169392,
@@ -180,5 +186,3 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
-
-

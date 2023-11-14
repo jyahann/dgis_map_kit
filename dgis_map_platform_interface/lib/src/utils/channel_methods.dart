@@ -7,7 +7,6 @@ class ChannelMethods {
   static const String clusterRender = "cluster#render";
   static const String clusterOnTap = "cluster#onTap";
   static const String cameraOnMove = "camera#onMove";
-  static const String userLocationChanged = "user#locationChanged";
 
   // outgoing
   static const String addLayer = "map#addLayer";

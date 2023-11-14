@@ -16,22 +16,17 @@ class MapConfig {
   // Map theme.
   final MapTheme theme;
 
-  // To make my geolocation enable.
-  final bool enableMyLocation;
-
   const MapConfig({
     required this.token,
     required this.initialCameraPosition,
     required this.layers,
     required this.theme,
-    required this.enableMyLocation,
   });
 
   Map<String, dynamic> toJson() {
     return {
       'token': token,
       'initialCameraPosition': initialCameraPosition.toJson(),
-      'enableMyLocation': enableMyLocation,
       'layers': layers
           .map(
             (layer) => {

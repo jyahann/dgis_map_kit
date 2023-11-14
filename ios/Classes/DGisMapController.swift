@@ -57,12 +57,14 @@ class DGisMapController : NSObject, FlutterPlatformView {
         super.init();
         
         self.cameraStateCancellable = self.map.camera.stateChannel.sink { state in
-            self.methodChannel.invokeMethod(
-                "camera#onMove",
-                arguments: CameraUtils.getCameraPositionToDart(
-                    cameraPosition: self.map.camera.position
-                )
-            );
+            DispatchQueue.main.async {
+                self.methodChannel.invokeMethod(
+                    "camera#onMove",
+                    arguments: CameraUtils.getCameraPositionToDart(
+                        cameraPosition: self.map.camera.position
+                    )
+                );
+            }
         }
         
         let singleTapGesture = UITapGestureRecognizer(target: self, action: #selector(self.singleTap(_:)))
@@ -135,10 +137,8 @@ class DGisMapController : NSObject, FlutterPlatformView {
                 switch userData!.type {
                 case .marker:
                     method = "markers#onTap";
-                    NSLog("marker on tap")
                     break;
                 case .cluster:
-                    NSLog("cluster on tap")
                     method = "cluster#onTap";
                     break;
                 }
@@ -244,7 +244,6 @@ class DGisMapController : NSObject, FlutterPlatformView {
             removeLayer(layerId: getMethodArgument(args: args!, argName: "layerId"));
             break;
         case "camera#move":
-            NSLog("Move camera");
             self.cameraController.moveCamera(cameraPosition: args as! Dictionary<String, Any>)
             break;
         case "markers#addMarkers":
