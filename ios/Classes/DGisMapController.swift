@@ -286,6 +286,10 @@ class DGisMapController : NSObject, FlutterPlatformView {
             let markerId: String = getMethodArgument(args: args!, argName: "markerId")!;
             getMarkersController(layerId: layerId, onExists: { $0.removeMarkerById(markerId: markerId) });
             break;
+        case "markers#removeAll":
+            let layerId: String? = getMethodArgument(args: args!, argName: "layerId");
+            getMarkersController(layerId: layerId, onExists: { $0.removeAll() });
+            break;
         case "markers#update":
             let layerId: String? = getMethodArgument(args: args!, argName: "layerId");
             let markerId: String = getMethodArgument(args: args!, argName: "markerId")!;

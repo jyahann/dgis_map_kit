@@ -83,6 +83,8 @@ class MarkersController {
     
     func removeAll() {
         self.objectManager.removeAll();
+        self.markersWithId = [:];
+        self.markersWithNoId = [];
     }
     
     func update(markerId: String, newMarker: Dictionary<String, Any?>) {

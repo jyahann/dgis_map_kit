@@ -42,40 +42,40 @@ class _MyAppState extends State<MyApp> {
               height: double.infinity,
               child: DGisMap(
                 token: "505d338f-975b-49e0-b4df-04c17dfa0ac3",
-                // layers: [
-                //   MapLayer.withClustering(
-                //     builder: (markers) => MapClusterer(
-                //       icon: "assets/map_cluster_pin.png",
-                //       iconOptions: MapIconOptions(
-                //         text: markers.length.toString(),
-                //         textStyle: const MapIconTextStyle(
-                //           fontSize: 13.0,
-                //           color: primaryColor,
-                //           strokeColor: primaryColor,
-                //           textPlacement: MapIconTextPlacement.TOP_CENTER,
-                //           textOffset: -20.0,
-                //         ),
-                //       ),
-                //     ),
-                //     maxZoom: 20.0,
-                //     minDistance: 100.0,
-                //     onTap: (markers, _) async {
-                //       final cameraPosition = _controller?.currentCameraPosition;
-                //       if (cameraPosition != null) {
-                //         final landmark = markers.first;
+                layers: [
+                  MapLayer.withClustering(
+                    builder: (markers) => MapClusterer(
+                      icon: "assets/map_cluster_pin.png",
+                      iconOptions: MapIconOptions(
+                        text: markers.length.toString(),
+                        textStyle: const MapIconTextStyle(
+                          fontSize: 13.0,
+                          color: primaryColor,
+                          strokeColor: primaryColor,
+                          textPlacement: MapIconTextPlacement.TOP_CENTER,
+                          textOffset: -20.0,
+                        ),
+                      ),
+                    ),
+                    maxZoom: 20.0,
+                    minDistance: 100.0,
+                    onTap: (markers, _) async {
+                      final cameraPosition = _controller?.currentCameraPosition;
+                      if (cameraPosition != null) {
+                        final landmark = markers.first;
 
-                //         _controller?.moveCamera(
-                //           CameraPosition(
-                //             position: landmark.position,
-                //             zoom: cameraPosition.zoom + 2,
-                //           ),
-                //           duration: const Duration(milliseconds: 300),
-                //           animationType: CameraAnimationType.DEFAULT,
-                //         );
-                //       }
-                //     },
-                //   ),
-                // ],
+                        _controller?.moveCamera(
+                          CameraPosition(
+                            position: landmark.position,
+                            zoom: cameraPosition.zoom + 2,
+                          ),
+                          duration: const Duration(milliseconds: 300),
+                          animationType: CameraAnimationType.DEFAULT,
+                        );
+                      }
+                    },
+                  ),
+                ],
                 theme: MapTheme.DARK,
                 enableUserLocation: true,
                 onUserLocationChanged: (position) {
