@@ -42,40 +42,40 @@ class _MyAppState extends State<MyApp> {
               height: double.infinity,
               child: DGisMap(
                 token: "505d338f-975b-49e0-b4df-04c17dfa0ac3",
-                layers: [
-                  MapLayer.withClustering(
-                    builder: (markers) => MapClusterer(
-                      icon: "assets/map_cluster_pin.png",
-                      iconOptions: MapIconOptions(
-                        text: markers.length.toString(),
-                        textStyle: const MapIconTextStyle(
-                          fontSize: 13.0,
-                          color: primaryColor,
-                          strokeColor: primaryColor,
-                          textPlacement: MapIconTextPlacement.TOP_CENTER,
-                          textOffset: -20.0,
-                        ),
-                      ),
-                    ),
-                    maxZoom: 20.0,
-                    minDistance: 100.0,
-                    onTap: (markers, _) async {
-                      final cameraPosition = _controller?.currentCameraPosition;
-                      if (cameraPosition != null) {
-                        final landmark = markers.first;
+                // layers: [
+                //   MapLayer.withClustering(
+                //     builder: (markers) => MapClusterer(
+                //       icon: "assets/map_cluster_pin.png",
+                //       iconOptions: MapIconOptions(
+                //         text: markers.length.toString(),
+                //         textStyle: const MapIconTextStyle(
+                //           fontSize: 13.0,
+                //           color: primaryColor,
+                //           strokeColor: primaryColor,
+                //           textPlacement: MapIconTextPlacement.TOP_CENTER,
+                //           textOffset: -20.0,
+                //         ),
+                //       ),
+                //     ),
+                //     maxZoom: 20.0,
+                //     minDistance: 100.0,
+                //     onTap: (markers, _) async {
+                //       final cameraPosition = _controller?.currentCameraPosition;
+                //       if (cameraPosition != null) {
+                //         final landmark = markers.first;
 
-                        _controller?.moveCamera(
-                          CameraPosition(
-                            position: landmark.position,
-                            zoom: cameraPosition.zoom + 2,
-                          ),
-                          duration: const Duration(milliseconds: 300),
-                          animationType: CameraAnimationType.DEFAULT,
-                        );
-                      }
-                    },
-                  ),
-                ],
+                //         _controller?.moveCamera(
+                //           CameraPosition(
+                //             position: landmark.position,
+                //             zoom: cameraPosition.zoom + 2,
+                //           ),
+                //           duration: const Duration(milliseconds: 300),
+                //           animationType: CameraAnimationType.DEFAULT,
+                //         );
+                //       }
+                //     },
+                //   ),
+                // ],
                 theme: MapTheme.DARK,
                 enableUserLocation: true,
                 onUserLocationChanged: (position) {
@@ -97,25 +97,19 @@ class _MyAppState extends State<MyApp> {
                   zoom: 12,
                 ),
                 mapOnTap: (position) {
-                  _controller?.markersController.removeById(
-                    "user_marker",
-                    "user_markers",
-                  );
-
                   _controller?.moveCamera(
                     CameraPosition(position: position, zoom: 18.0),
                     duration: const Duration(milliseconds: 400),
                     animationType: CameraAnimationType.SHOW_BOTH_POSITIONS,
                   );
 
-                  _controller?.markersController.addMarkers(
-                    [
-                      Marker(
-                        id: "user_marker",
-                        position: position,
-                        icon: "assets/map_pin.png",
-                      )
-                    ],
+                  _controller?.markersController.addMarker(
+                    Marker(
+                      id: "user_marker",
+                      position: position,
+                      icon: "assets/map_pin.png",
+                    ),
+                    "user_markers",
                   );
                 },
                 markerOnTap: (marker, _) => _controller?.moveCamera(

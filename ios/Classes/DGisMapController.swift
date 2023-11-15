@@ -159,7 +159,7 @@ class DGisMapController : NSObject, FlutterPlatformView {
         )
         self.renderedObjectsCancellable = cancel;
     }
-
+    
     
     func addLayer(layerId: String? = nil) {
         self.markersControllers.append(
@@ -169,7 +169,18 @@ class DGisMapController : NSObject, FlutterPlatformView {
                 map: self.map,
                 sdk: self.sdk,
                 methodChannel: self.methodChannel,
-                objectManager: MapObjectManager(map: map, layerId: layerId)
+                objectManager: MapObjectManager.withClustering(
+                    map: map,
+                    logicalPixel: LogicalPixel(value: 0.5),
+                    maxZoom: Zoom(value: 0.0),
+                    clusterRenderer: LayerRenderer(
+                        methodChannel: self.methodChannel,
+                        registrar: self.registrar,
+                        sdk: self.sdk,
+                        layerId: layerId
+                    ),
+                    layerId: layerId
+                )
             )
         );
     }
@@ -185,7 +196,6 @@ class DGisMapController : NSObject, FlutterPlatformView {
                 methodChannel: self.methodChannel,
                 objectManager: MapObjectManager.withClustering(
                     map: map,
-                    
                     logicalPixel: LogicalPixel(
                         value: Float(layerConfig["minDistance"] as! Double)
                     ),

@@ -7,8 +7,10 @@ class MarkersController {
     private var sdk: DGis.Container;
     private var methodChannel: FlutterMethodChannel;
     private var map: DGis.Map;
-    private var objectManager: MapObjectManager;
-    private var gisMarkers: Array<Marker> = [];
+    private let objectManager: MapObjectManager;
+    
+    private var markersWithId: Dictionary<String, Marker> = [:];
+    private var markersWithNoId: Array<Marker> = [];
     
     init(layerId: String? = nil, registrar: FlutterPluginRegistrar, map: DGis.Map, sdk: DGis.Container, methodChannel: FlutterMethodChannel, objectManager: MapObjectManager) {
         self.layerId = layerId
@@ -19,57 +21,63 @@ class MarkersController {
         self.objectManager = objectManager;
     }
     
+    func getAllMarkers() -> Array<Marker> {
+        return self.markersWithNoId + self.markersWithId.map{ $0.value };
+    }
+    
     func addMarkers(markers: Array<Any>) {
         var newMarkers = Array<Marker>();
         
         for marker in markers {
-            _deleteMarkerIfExists(marker: marker as! Dictionary<String, Any>);
             newMarkers.append(
-                MarkersUtils.getMarkerFromDart(
-                    marker: marker as! Dictionary<String, Any>,
-                    sdk: self.sdk,
-                    registrar: self.registrar,
-                    layerId: self.layerId
-                )
+                _processNewMarker(marker: marker)
             );
         }
         
-        self.gisMarkers.append(contentsOf: newMarkers);
+        NSLog("Adding markers on \(layerId ?? "")")
+        
         self.objectManager.addObjects(objects: newMarkers);
     }
     
-    func addMarker(marker: Dictionary<String, Any?>) {
-        _deleteMarkerIfExists(marker: marker);
-        let newMarker = MarkersUtils.getMarkerFromDart(
-            marker: marker,
+    private func _processNewMarker(marker: Any) -> Marker {
+        let markerId = (marker as! Dictionary<String, Any?>)["id"] as? String;
+        let marker = MarkersUtils.getMarkerFromDart(
+            marker: marker as! Dictionary<String, Any?>,
             sdk: self.sdk,
             registrar: self.registrar,
             layerId: self.layerId
         );
-        
-        self.gisMarkers.append(newMarker);
-        self.objectManager.addObject(item: newMarker);
+        if (markerId != nil) {
+            let oldMarker = getById(markerId: markerId!)
+            if (oldMarker != nil) {
+                self.objectManager.removeObject(item: oldMarker!)
+            }
+            markersWithId[markerId!] = marker
+        } else {
+            markersWithNoId.append(marker)
+        }
+        return marker
+    }
+    
+    func addMarker(marker: Dictionary<String, Any?>) {
+        self.objectManager.addObject(item: _processNewMarker(marker: marker));
     }
     
     func getAll() -> Array<Any?> {
-        return self.gisMarkers.map { ($0.userData as! MapObjectUserData).userData };
+        return self.getAllMarkers().map { ($0.userData as! MapObjectUserData).userData };
     }
     
     func getById(markerId: String) -> Marker? {
-        let index = _getMarkerIndexById(markerId: markerId);
-        if index == nil {
-            return nil
-        }
-        return self.gisMarkers[index!];
+        return self.markersWithId[markerId];
     }
     
     func removeMarkerById(markerId: String) {
-        let index = _getMarkerIndexById(markerId: markerId)
-        if index != nil {
-            self.objectManager.removeObject(item: self.gisMarkers[index!]);
-            self.gisMarkers.remove(at: index!);
+        let marker = getById(markerId: markerId)
+        if marker != nil {
+            self.objectManager.removeObject(item: marker!);
+            self.markersWithId.removeValue(forKey: markerId);
         } else {
-            NSLog("DGis: marker with given id \(markerId) isn't exists")
+            NSLog("DGis: marker with given id \(markerId) isn't exists");
         }
     }
     
@@ -80,25 +88,5 @@ class MarkersController {
     func update(markerId: String, newMarker: Dictionary<String, Any?>) {
         removeMarkerById(markerId: markerId);
         addMarker(marker: newMarker);
-    }
-    
-    private func _deleteMarkerIfExists(marker: Dictionary<String, Any?>)  {
-        let markerId = marker["id"] as? String;
-        if markerId != nil {
-            let index = _getMarkerIndexById(markerId: markerId!);
-            if index != nil {
-                self.objectManager.removeObject(item: self.gisMarkers[index!]);
-                self.gisMarkers.remove(at: index!);
-            }
-        }
-    }
-    
-    func _getMarkerIndexById(markerId: String) -> Int? {
-        for (index, marker) in self.gisMarkers.enumerated() {
-            if ((marker.userData as! MapObjectUserData).userData as! Dictionary<String, Any?>)["id"] as? String == markerId {
-                return index;
-            }
-        }
-        return nil;
     }
 }

@@ -43,6 +43,46 @@ class MarkersUtils {
         );
     }
     
+    static func getLayerOptionsFromDart(
+        marker: Dictionary<String, Any?>,
+        sdk: DGis.Container,
+        registrar: FlutterPluginRegistrar,
+        layerId: String?
+    ) -> SimpleClusterOptions {
+        let iconOptions = marker["iconOptions"] as! Dictionary<String, Any>;
+        let assetLookupKey = registrar.lookupKey(forAsset: marker["icon"] as! String);
+        let image = UIImage.loadFromFile(imagePath: assetLookupKey);
+        let icon = sdk.imageFactory.make(image: image!)
+        
+        return SimpleClusterOptions(
+            icon: icon,
+            iconMapDirection: getMapDirectionFromDart(
+                value: iconOptions["iconMapDirection"]
+            ),
+            anchor: getAnchorFromDart(
+                anchor: iconOptions["anchor"] as! Dictionary<String, Any>
+            ),
+            text: iconOptions["text"] as? String,
+            textStyle: getTextStyleFromDart(
+                textStyle: iconOptions["textStyle"] as! Dictionary<String, Any>
+            ),
+            iconOpacity: Opacity(
+                value: Float(iconOptions["iconOpacity"] as! Double)
+            ),            iconWidth: LogicalPixel(
+                value: Float(iconOptions["size"] as! Double)
+            ),
+            userData: MapObjectUserData(
+                userDataType: MapObjectUserDataType.marker,
+                userData: marker,
+                layerId: layerId
+            ),
+            zIndex: ZIndex(
+                value: UInt32(iconOptions["zIndex"] as! Double)
+            ),
+            animatedAppearance: iconOptions["animatedAppearance"] as! Bool
+        );
+    }
+    
     static func getMarkerFromDart(
         marker: Dictionary<String, Any?>,
         sdk: DGis.Container,

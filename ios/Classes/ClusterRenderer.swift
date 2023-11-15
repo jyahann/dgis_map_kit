@@ -51,22 +51,5 @@ final class ClusterRenderer: SimpleClusterRenderer {
             
         return clusterOptions!;
     }
-    
-    func someFunc() -> String {
-        var val: String?;
-        getValue {
-            value in
-            val = value;
-        };
-        
-        while val == nil {
-            // wait
-        }
-        return val!;
-    }
-    
-    func getValue(callback: (String) -> Void) {
-        callback("value");
-    }
 }
 
