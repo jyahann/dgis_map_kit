@@ -1,6 +1,6 @@
 PODS:
   - dgis_map_kit (0.0.1):
-    - DGisMobileSDK (~> 2.8-map)
+    - DGisMobileSDK (= 2.8.0-map)
     - Flutter
   - DGisMobileSDK (2.8.0-map)
   - Flutter (1.0.0)
@@ -30,12 +30,12 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/location/ios"
 
 SPEC CHECKSUMS:
-  dgis_map_kit: 1113b2410b33ee8e56406522792171aeb2a04709
+  dgis_map_kit: c5ada0de00c2c9df4be37a826d6b1fcffcf641b7
   DGisMobileSDK: a5956ca1a3c2ce0ea558a960395e2129c64d5aab
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   integration_test: 13825b8a9334a850581300559b8839134b124670
   location: d5cf8598915965547c3f36761ae9cc4f4e87d22e
 
-PODFILE CHECKSUM: 9c46fd01abff66081b39f5fa5767b3f1d0b11d76
+PODFILE CHECKSUM: 0e525152e3ec397947996fbf92d176f885bd8b2a
 
 COCOAPODS: 1.14.2
