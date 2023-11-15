@@ -20,6 +20,9 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   static const Color primaryColor = Color(0xff11C775);
 
+  DGisMapController? _controller;
+  final Completer<bool> _isMapReadyCompleter = Completer();
+
   @override
   void initState() {
     super.initState();
@@ -27,9 +30,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    late DGisMapController _controller;
-    final Completer<bool> _isMapReadyCompleter = Completer();
-
     log.log("starting example");
 
     return MaterialApp(
@@ -60,17 +60,19 @@ class _MyAppState extends State<MyApp> {
                     maxZoom: 20.0,
                     minDistance: 100.0,
                     onTap: (markers, _) async {
-                      final cameraPosition = _controller.currentCameraPosition;
-                      final landmark = markers.first;
+                      final cameraPosition = _controller?.currentCameraPosition;
+                      if (cameraPosition != null) {
+                        final landmark = markers.first;
 
-                      _controller.moveCamera(
-                        CameraPosition(
-                          position: landmark.position,
-                          zoom: cameraPosition.zoom + 2,
-                        ),
-                        duration: const Duration(milliseconds: 300),
-                        animationType: CameraAnimationType.DEFAULT,
-                      );
+                        _controller?.moveCamera(
+                          CameraPosition(
+                            position: landmark.position,
+                            zoom: cameraPosition.zoom + 2,
+                          ),
+                          duration: const Duration(milliseconds: 300),
+                          animationType: CameraAnimationType.DEFAULT,
+                        );
+                      }
                     },
                   ),
                 ],
@@ -80,8 +82,12 @@ class _MyAppState extends State<MyApp> {
                   log.log(
                     "User location changed: ${position.lat} ${position.long}",
                   );
-                  
-                  return Marker(position: position, icon: "assets/user_location.png");
+
+                  return Marker(
+                    position: position,
+                    icon: "assets/user_location.png",
+                    iconOptions: const MapIconOptions(size: 40.0),
+                  );
                 },
                 initialCameraPosition: CameraPosition(
                   position: const Position(
@@ -91,18 +97,18 @@ class _MyAppState extends State<MyApp> {
                   zoom: 12,
                 ),
                 mapOnTap: (position) {
-                  _controller.markersController.removeById(
+                  _controller?.markersController.removeById(
                     "user_marker",
                     "user_markers",
                   );
 
-                  _controller.moveCamera(
+                  _controller?.moveCamera(
                     CameraPosition(position: position, zoom: 18.0),
                     duration: const Duration(milliseconds: 400),
                     animationType: CameraAnimationType.SHOW_BOTH_POSITIONS,
                   );
 
-                  _controller.markersController.addMarkers(
+                  _controller?.markersController.addMarkers(
                     [
                       Marker(
                         id: "user_marker",
@@ -112,7 +118,7 @@ class _MyAppState extends State<MyApp> {
                     ],
                   );
                 },
-                markerOnTap: (marker, _) => _controller.moveCamera(
+                markerOnTap: (marker, _) => _controller?.moveCamera(
                   CameraPosition(
                     position: marker.position,
                     zoom: 18,
@@ -122,7 +128,7 @@ class _MyAppState extends State<MyApp> {
                 mapOnReady: () {
                   _isMapReadyCompleter.complete(true);
 
-                  _controller.markersController.addMarkers(
+                  _controller?.markersController.addMarkers(
                     const [
                       Marker(
                         id: "id",
@@ -150,7 +156,8 @@ class _MyAppState extends State<MyApp> {
                     ],
                   );
 
-                  _controller.addLayer(const MapLayer(layerId: "user_markers"));
+                  _controller
+                      ?.addLayer(const MapLayer(layerId: "user_markers"));
                 },
                 mapOnCreated: (controller) {
                   _controller = controller;
@@ -160,8 +167,10 @@ class _MyAppState extends State<MyApp> {
             FutureBuilder(
               future: _isMapReadyCompleter.future,
               builder: (context, snapshot) {
-                if (snapshot.hasData && snapshot.data == true) {
-                  return MapNavigation(mapController: _controller);
+                if (snapshot.hasData &&
+                    snapshot.data == true &&
+                    _controller != null) {
+                  return MapNavigation(mapController: _controller!);
                 }
                 return const SizedBox.shrink();
               },
@@ -173,8 +182,10 @@ class _MyAppState extends State<MyApp> {
               child: FutureBuilder(
                 future: _isMapReadyCompleter.future,
                 builder: (context, snapshot) {
-                  if (snapshot.hasData && snapshot.data == true) {
-                    return CameraControllButtons(mapController: _controller);
+                  if (snapshot.hasData &&
+                      snapshot.data == true &&
+                      _controller != null) {
+                    return CameraControllButtons(mapController: _controller!);
                   }
                   return const SizedBox.shrink();
                 },

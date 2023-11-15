@@ -43,6 +43,10 @@ class MarkersController(
         if (markerId != null) {
             val marker = getById(markerId)
             if (marker != null) {
+                Log.d(
+                    "DGIS",
+                    "_deleteMarkerIfExists ($markerId)"
+                )
                 mapObjectManager.removeObject(marker)
                 gisMarkers.remove(marker)
             }

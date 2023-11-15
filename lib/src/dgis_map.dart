@@ -83,8 +83,6 @@ class _DGisMapState extends State<DGisMap> {
 
   final Completer<bool> isMapReady = Completer<bool>();
 
-  List<StreamSubscription<MapEvent>> _eventSubsciptions = [];
-
   late StreamController<UserLocationChanged> _userLocationStreamController;
 
   late DGisMapPlatform _dGisMapPlatform;
@@ -113,35 +111,37 @@ class _DGisMapState extends State<DGisMap> {
     }
 
     final controller = await _controller.future;
-    await controller.addLayer(const MapLayer(layerId: "user_location"));
+
+    const userLocationLayerId = "user_location";
+    await controller.addLayer(const MapLayer(layerId: userLocationLayerId));
 
     _userLocationStreamController = StreamController<UserLocationChanged>();
-    _eventSubsciptions.add(
-      _userLocationStreamController.stream.listen((event) {
-        if (widget.onUserLocationChanged != null) {
-          final userMarker = widget.onUserLocationChanged!(event.position);
+    _userLocationStreamController.stream.listen((event) {
+      if (widget.onUserLocationChanged != null) {
+        final userMarker = widget.onUserLocationChanged!(event.position);
 
-          controller.markersController.removeAll("user_location");
-          controller.markersController.addMarker(userMarker);
-        }
-      }),
-    );
+        controller.markersController.removeAll("user_location");
+        controller.markersController.addMarker(
+          userMarker,
+          userLocationLayerId,
+        );
+      }
+    });
 
-    location.getLocation().then(_userLocationUpdated); 
+    location.getLocation().then(_userLocationUpdated);
 
     location.onLocationChanged.listen(_userLocationUpdated);
   }
 
   void _userLocationUpdated(LocationData currentLocation) {
-    if (currentLocation.latitude != null &&
-          currentLocation.longitude != null) {
-        _userLocationStreamController.add(UserLocationChanged(
-          position: Position(
-            lat: currentLocation.latitude!,
-            long: currentLocation.longitude!,
-          ),
-        ));
-      }
+    if (currentLocation.latitude != null && currentLocation.longitude != null) {
+      _userLocationStreamController.add(UserLocationChanged(
+        position: Position(
+          lat: currentLocation.latitude!,
+          long: currentLocation.longitude!,
+        ),
+      ));
+    }
   }
 
   @override
@@ -166,56 +166,38 @@ class _DGisMapState extends State<DGisMap> {
 
   // Transfers events to callbacks
   void _setPlatformViewListeners() {
-    _eventSubsciptions.add(
-      _dGisMapPlatform.on<MapIsReadyEvent>((event) {
-        _setLocationListeners();
-        if (!isMapReady.isCompleted) {
-          if (widget.mapOnReady != null) widget.mapOnReady!();
-          isMapReady.complete(true);
-        }
-      }),
-    );
+    _dGisMapPlatform.on<MapIsReadyEvent>((event) {
+      _setLocationListeners();
+      if (!isMapReady.isCompleted) {
+        if (widget.mapOnReady != null) widget.mapOnReady!();
+        isMapReady.complete(true);
+      }
+    });
 
-    _eventSubsciptions.add(
-      _dGisMapPlatform.on<MapOnTapEvent>((event) {
-        if (widget.mapOnTap != null) widget.mapOnTap!(event.position);
-      }),
-    );
+    _dGisMapPlatform.on<MapOnTapEvent>((event) {
+      if (widget.mapOnTap != null) widget.mapOnTap!(event.position);
+    });
 
-    _eventSubsciptions.add(_dGisMapPlatform.on<MarkersOnTapEvent>((event) {
+    _dGisMapPlatform.on<MarkersOnTapEvent>((event) {
       if (widget.markerOnTap != null) {
         widget.markerOnTap!(event.marker, event.layerId);
       }
-    }));
+    });
 
-    _eventSubsciptions.add(
-      _dGisMapPlatform.on<ClusterOnTapEvent>((event) {
-        for (var layer in _dGisMapPlatform.layers) {
-          if (layer is ClustererLayer &&
-              layer.layerId == event.layerId &&
-              layer.onTap != null) {
-            layer.onTap!(event.markers, event.layerId);
-          }
+    _dGisMapPlatform.on<ClusterOnTapEvent>((event) {
+      for (var layer in _dGisMapPlatform.layers) {
+        if (layer is ClustererLayer &&
+            layer.layerId == event.layerId &&
+            layer.onTap != null) {
+          layer.onTap!(event.markers, event.layerId);
         }
-      }),
-    );
+      }
+    });
 
-    _eventSubsciptions.add(
-      _dGisMapPlatform.on<CameraOnMoveEvent>((event) {
-        if (widget.cameraOnMove != null) {
-          widget.cameraOnMove!(event.cameraPosition);
-        }
-      }),
-    );
-  }
-
-  @override
-  void dispose() {
-    for (var i = 0; i < _eventSubsciptions.length; i++) {
-      _eventSubsciptions[i].cancel();
-    }
-
-    // TODO: implement dispose
-    super.dispose();
+    _dGisMapPlatform.on<CameraOnMoveEvent>((event) {
+      if (widget.cameraOnMove != null) {
+        widget.cameraOnMove!(event.cameraPosition);
+      }
+    });
   }
 }

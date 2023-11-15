@@ -4,14 +4,12 @@ import DGisMapConfig
 import android.content.Context
 import android.content.res.Resources.NotFoundException
 import android.view.View
-import com.example.dgis_flutter.MyLocationSource
 import io.flutter.Log
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.platform.PlatformView
 import ru.dgis.sdk.map.MapView
-import ru.dgis.sdk.navigation.NavigationManager
 import java.util.concurrent.CompletableFuture
 
 class DGisMapController(
@@ -33,7 +31,9 @@ class DGisMapController(
         return gisView
     }
 
-    override fun dispose() {}
+    override fun dispose() {
+        methodChannel.setMethodCallHandler(null);
+    }
 
     init {
         this.sdkContext = initializeDGis(context, mapConfig.token)
@@ -51,9 +51,6 @@ class DGisMapController(
                         binaryMessenger,
                         "plugins.jyahann/dgis_map_$id",
                 )
-        if (mapConfig.enableMyLocation) {
-            registerPlatformLocationSource(sdkContext, MyLocationSource(context, methodChannel))
-        }
 
         methodChannel.setMethodCallHandler(this)
         gisView.getMapAsync(::onMapReady)
@@ -62,7 +59,6 @@ class DGisMapController(
     fun onMapReady(map: ru.dgis.sdk.map.Map) {
         this.map.complete(map)
 
-        var controller = createSmoothMyLocationController()
         gisView.setTouchEventsObserver(
             DGisMapTouchEventObserver(map, methodChannel)
         )
