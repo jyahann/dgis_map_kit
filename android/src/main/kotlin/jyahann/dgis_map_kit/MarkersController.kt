@@ -5,6 +5,7 @@ import io.flutter.plugin.common.MethodChannel
 import ru.dgis.sdk.map.MapObjectManager
 import ru.dgis.sdk.map.Marker
 import ru.dgis.sdk.map.SimpleMapObject
+import java.util.Dictionary
 
 class MarkersController(
     sdkContext: ru.dgis.sdk.Context,
@@ -16,7 +17,9 @@ class MarkersController(
     private var sdkContext: ru.dgis.sdk.Context
     private var mapObjectManager: MapObjectManager
     private var methodChannel: MethodChannel
-    private var gisMarkers: MutableList<Marker> = ArrayList()
+
+    private var markersWithNoId: MutableList<Marker> = ArrayList();
+    private var markersWithId: MutableMap<String, Marker> = mutableMapOf();
 
 
     init {
@@ -26,55 +29,55 @@ class MarkersController(
         this.mapObjectManager = mapObjectManager
     }
 
+    fun _getAllMarkers() : List<Marker> {
+        return markersWithNoId.plus(markersWithNoId.map { marker -> marker });
+    }
+
     fun addMarkers(markers: List<Any>) {
         val gisMarkers: MutableList<Marker> = ArrayList()
 
         for (marker in markers) {
-            _deleteMarkerIfExists(marker as Map<String, Any?>)
-            gisMarkers.add(MarkersUtils.getMarkerFromDart(marker, this.sdkContext, layerId))
+            gisMarkers.add(_processNewMarker(marker))
         }
 
-        this.gisMarkers.addAll(gisMarkers)
         mapObjectManager.addObjects(gisMarkers)
     }
 
-    private fun _deleteMarkerIfExists(marker: Map<String, Any?>) {
-        val markerId = marker["id"] as String?
+    private fun _processNewMarker(marker: Any) : Marker {
+        val markerId = (marker as Map<String, Any?>)["id"] as String?
+        val marker = MarkersUtils.getMarkerFromDart(marker, this.sdkContext, layerId)
         if (markerId != null) {
-            val marker = getById(markerId)
-            if (marker != null) {
-                Log.d(
-                    "DGIS",
-                    "_deleteMarkerIfExists ($markerId)"
-                )
-                mapObjectManager.removeObject(marker)
-                gisMarkers.remove(marker)
+            val oldMarker = getById(markerId)
+            if (oldMarker != null) {
+                mapObjectManager.removeObject(oldMarker)
             }
+            markersWithId[markerId] = marker
+        } else {
+            markersWithNoId.add(marker)
         }
+        return marker
     }
 
     fun addMarker(marker: Map<String, Any?>) {
-        _deleteMarkerIfExists(marker)
-        var marker = MarkersUtils.getMarkerFromDart(marker, this.sdkContext, layerId)
+        var marker = _processNewMarker(marker)
 
-        gisMarkers.add(marker)
         mapObjectManager.addObject(marker)
     }
 
 
     fun getAll() : List<Any?> {
-        return gisMarkers.map { marker -> (marker.userData as MapObjectUserData).userData }
+        return _getAllMarkers().map { marker -> (marker.userData as MapObjectUserData).userData }
     }
 
     fun getById(markerId: String) : Marker? {
-        return gisMarkers.firstOrNull() { marker -> ((marker.userData as MapObjectUserData).userData as Map<String, Any?>)["id"] as String? == markerId }
+        return markersWithId[markerId]
     }
 
     fun removeMarkerById(markerId: String) {
         val marker = getById(markerId)
         if (marker != null) {
             mapObjectManager.removeObject(marker)
-            gisMarkers.remove(marker)
+            markersWithId.remove(markerId)
         } else {
             Log.d(
                 "DGIS",
@@ -83,6 +86,8 @@ class MarkersController(
         }
     }
     fun removeAll() {
+        markersWithNoId = ArrayList()
+        markersWithId = mutableMapOf()
         mapObjectManager.removeAll()
     }
 
