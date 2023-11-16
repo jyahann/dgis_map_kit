@@ -1,7 +1,7 @@
 name: dgis_map_platform_interface
-description: A new Flutter package project.
+description: 2Gis map platform-specific implementation interface.
+repository: https://github.com/jyahann/dgis_map_kit/tree/main/dgis_map_platform_interface
 version: 0.0.1
-homepage:
 
 environment:
   sdk: '>=3.1.2 <4.0.0'
