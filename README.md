@@ -34,10 +34,10 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-The <a href="https://docs.2gis.com/">2Gis</a> Map Kit allows you to add a 2GIS map to your Flutter application, and one of its important features is the ability to work cross-platform. This means that you can use this plugin to integrate 2GIS maps into applications created using Flutter on different operating systems, such as Android and iOS. This provides universality and accessibility of your mapping functionality on various devices, making it more convenient for developers and users.
+This Flutter <a href="https://docs.2gis.com/">2Gis</a> map plugin allows you to add a 2GIS map to your Flutter application, and one of its important features is the ability to work cross-platform. This provides universality and accessibility of your mapping functionality on various devices, making it more convenient for developers and users.
 
 Packages using on platform-side:
-* IOS: <a href="https://docs.2gis.com/ru/ios/sdk/overview">2Gis IOS SDK</a>
+* IOS: <a href="https://docs.2gis.com/ru/ios/sdk/overview">2Gis iOS SDK</a>
 * Android: <a href="https://docs.2gis.com/ru/android/sdk/overview">2Gis Android SDK</a>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -153,6 +153,12 @@ return DGisMap(
 ),
 ```
 
+<p float="left" align="center">
+  <img src="https://github.com/jyahann/dgis_map_kit/assets/68599394/fa0ef985-7b72-462d-a9c6-1167be7b6741" width="300" margin="10"/>
+  &nbsp;
+  <img src="https://github.com/jyahann/dgis_map_kit/assets/68599394/9aea3e76-79cd-4105-a61e-645b58de60a2" width="300"/>
+</p>
+
 ### Add markers clustering layer
 
 ```dart
@@ -175,6 +181,12 @@ return DGisMap(
 ),
 ```
 
+<p float="left" align="center">
+  <img src="https://github.com/jyahann/dgis_map_kit/assets/68599394/2a3d6fab-7eba-489b-923a-88dd3b927caf" width="300" margin="10"/>
+  &nbsp;
+  <img src="https://github.com/jyahann/dgis_map_kit/assets/68599394/eee883c7-ed23-465e-b4d6-a6fb0977ccc8" width="300"/>
+</p>
+
 ### Camera moves
 
 ```dart
@@ -196,6 +208,11 @@ return DGisMap(
 ),
 ```
 
+<p float="left" align="center">
+  <img src="https://github.com/jyahann/dgis_map_kit/assets/68599394/f3e533c6-771f-40d5-aa79-9ab9547bea09" width="300" margin="10"/>
+  &nbsp;
+  <img src="https://github.com/jyahann/dgis_map_kit/assets/68599394/e890c2c7-5cfb-40c5-87e4-68517d49f084" width="300"/>
+</p>
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
