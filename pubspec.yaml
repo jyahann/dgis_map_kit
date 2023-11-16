@@ -10,10 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  dgis_map_platform_interface: 
-    git: 
-      url: https://github.com/jyahann/dgis_map_kit.git
-      path: dgis_map_platform_interface
+  dgis_map_platform_interface: ^0.0.1
   location: ^5.0.3
 
 
