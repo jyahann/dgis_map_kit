@@ -1,3 +1,5 @@
+<a name="readme-top"></a>
+
 <!-- TABLE OF CONTENTS -->
 <details>
   <summary>Table of Contents</summary>
@@ -125,6 +127,8 @@ return DGisMap(
 ),
 ```
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ### Uploading markers on map
 
 ```dart
@@ -159,6 +163,8 @@ return DGisMap(
   <img src="https://github.com/jyahann/dgis_map_kit/assets/68599394/9aea3e76-79cd-4105-a61e-645b58de60a2" width="300"/>
 </p>
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ### Add markers clustering layer
 
 ```dart
@@ -186,6 +192,8 @@ return DGisMap(
   &nbsp;
   <img src="https://github.com/jyahann/dgis_map_kit/assets/68599394/eee883c7-ed23-465e-b4d6-a6fb0977ccc8" width="300"/>
 </p>
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Camera moves
 
@@ -225,5 +233,3 @@ return DGisMap(
 jyahann - [@jyahann](https://t.me/jyahann) - raishi24e@gmail.com
 
 Project Link: [https://github.com/jyahann/dgis_map_kit.git](https://github.com/jyahann/dgis_map_kit.git)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
