@@ -1,7 +1,7 @@
 name: dgis_map_kit
 description: 2Gis Flutter plugin.
 repository: https://github.com/jyahann/dgis_map_kit.git
-version: 0.0.2.1
+version: 0.0.3
 
 environment:
   sdk: '>=3.1.2 <4.0.0'
