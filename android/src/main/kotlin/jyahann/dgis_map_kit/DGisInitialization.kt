@@ -3,13 +3,18 @@ package jyahann.dgis_map_kit
 import ru.dgis.sdk.ApiKeys
 import ru.dgis.sdk.Context
 import ru.dgis.sdk.DGis
+import ru.dgis.sdk.KeyFromString
+import ru.dgis.sdk.KeySource
 
 fun initializeDGis(appContext: android.content.Context, key: String): Context {
     return DGis.initialize(
         appContext,
-        ApiKeys(
-            map = key,
-            directory = "",
+        keySource = KeySource(
+            fromString = KeyFromString(contents = key)
         ),
+//        ApiKeys(
+//            map = key,
+//            directory = "",
+//        ),
     )
 }
