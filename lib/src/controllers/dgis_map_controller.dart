@@ -65,4 +65,9 @@ class DGisMapController {
       animationType: animationType,
     );
   }
+
+  /// Set [MapTheme] to the map
+  Future<void> setTheme(MapTheme theme) async {
+    await _dGisMapPlatform.setTheme(theme);
+  }
 }

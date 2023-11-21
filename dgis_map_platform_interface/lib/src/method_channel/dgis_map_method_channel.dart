@@ -202,10 +202,21 @@ class DGisMapMethodChannel extends DGisMapPlatform {
     );
   }
 
+  /// Set [MapTheme] to the map
+  @override
+  Future<void> setTheme(MapTheme theme) async {
+    await _channel.invokeMethod(
+      ChannelMethods.setTheme,
+      {
+        "theme": theme.name,
+      },
+    );
+  }
+
   void _checkLayerExistence(String? layerId) {
     if (!layers.any((element) => element.layerId == layerId)) {
       throw LayerNotExistsException(
-        message: "Layer with givien id {${layerId}} not exists",
+        message: "Layer with givien id {$layerId} not exists",
       );
     }
   }

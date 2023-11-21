@@ -12,9 +12,10 @@ class CameraControllButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(15.0),
+      padding: const EdgeInsets.all(15.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           RawMaterialButton(
             shape: RoundedRectangleBorder(
@@ -26,14 +27,14 @@ class CameraControllButtons extends StatelessWidget {
             ),
             onPressed: () => mapController.moveCamera(
               CameraPosition(
-                position: const Position(lat: 59.937500, long: 30.308611),
-                zoom: 12,
+                position: const Position(lat: 43.238949, long: 76.889709),
+                zoom: 11,
               ),
             ),
-            fillColor: Colors.black.withOpacity(0.5),
             splashColor: Colors.white,
+            fillColor: Colors.black.withOpacity(0.5),
             child: const Text(
-              "Go to St Petersburg",
+              "Go to Almaty",
               style: TextStyle(
                 fontSize: 22.0,
                 color: Colors.white,
@@ -53,14 +54,14 @@ class CameraControllButtons extends StatelessWidget {
             ),
             onPressed: () => mapController.moveCamera(
               CameraPosition(
-                position: const Position(lat: 43.238949, long: 76.889709),
-                zoom: 11,
+                position: const Position(lat: 59.937500, long: 30.308611),
+                zoom: 12,
               ),
             ),
-            splashColor: Colors.white,
             fillColor: Colors.black.withOpacity(0.5),
+            splashColor: Colors.white,
             child: const Text(
-              "Go to Almaty",
+              "Go to St Petersburg",
               style: TextStyle(
                 fontSize: 22.0,
                 color: Colors.white,

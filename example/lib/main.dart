@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dgis_map_kit/dgis_map_kit.dart';
 import 'package:dgis_map_kit_example/camera_control_buttons.dart';
 import 'package:dgis_map_kit_example/map_navigation.dart';
+import 'package:dgis_map_kit_example/theme_picker.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as log;
 
@@ -173,16 +174,30 @@ class _MyAppState extends State<MyApp> {
               bottom: 0,
               left: 0,
               right: 0,
-              child: FutureBuilder(
-                future: _isMapReadyCompleter.future,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData &&
-                      snapshot.data == true &&
-                      _controller != null) {
-                    return CameraControllButtons(mapController: _controller!);
-                  }
-                  return const SizedBox.shrink();
-                },
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  FutureBuilder(
+                    future: _isMapReadyCompleter.future,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData &&
+                          snapshot.data == true &&
+                          _controller != null) {
+                        return CameraControllButtons(
+                            mapController: _controller!);
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  ),
+                  ThemePicker(
+                    onThemeChange: (value) async {
+                      if (await _isMapReadyCompleter.future) {
+                        _controller!.setTheme(value);
+                      }
+                    },
+                  )
+                ],
               ),
             ),
           ],

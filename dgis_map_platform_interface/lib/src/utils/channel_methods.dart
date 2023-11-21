@@ -12,6 +12,7 @@ class ChannelMethods {
   static const String addLayer = "map#addLayer";
   static const String addLayerWithClustering = "map#addLayerWithClustering";
   static const String removeLayer = "map#removeLayer";
+  static const String setTheme = "map#setTheme";
   static const String addMarkers = "markers#addMarkers";
   static const String addMarker = "markers#addMarker";
   static const String getAllMarkers = "markers#getAll";

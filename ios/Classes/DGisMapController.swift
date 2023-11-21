@@ -253,6 +253,10 @@ class DGisMapController : NSObject, FlutterPlatformView {
         case "map#removeLayer":
             removeLayer(layerId: getMethodArgument(args: args!, argName: "layerId"));
             break;
+        case "map#setTheme":
+            let theme: String? = getMethodArgument(args: args!, argName: "theme");
+            self.mapView.appearance = .universal(theme == "LIGHT" ? "day" : "night");
+            break;
         case "camera#move":
             self.cameraController.moveCamera(cameraPosition: args as! Dictionary<String, Any>)
             break;
