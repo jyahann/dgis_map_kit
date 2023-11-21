@@ -1,3 +1,7 @@
+## 0.0.4, 21 November, 2023
+
+* Added the option to change the theme during execution
+
 ## 0.0.3, 21 November, 2023
 
 * Android SDK version change from full to light

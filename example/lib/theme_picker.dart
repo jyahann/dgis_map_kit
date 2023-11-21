@@ -58,28 +58,6 @@ class _ThemePickerState extends State<ThemePicker> {
   Widget buildSwitch() {
     return Switch(
       value: inDarkMode,
-      // overlayColor: MaterialStateProperty.resolveWith<Color?>(
-      //   (Set<MaterialState> states) {
-      //     if (states.contains(MaterialState.selected)) {
-      //       return Theme.of(context).primaryColor;
-      //     }
-      //     return null;
-      //   },
-      // ),
-      // trackColor: MaterialStateProperty.resolveWith<Color?>(
-      //   (Set<MaterialState> states) {
-      //     if (states.contains(MaterialState.selected)) {
-      //       return Theme.of(context).primaryColor.withOpacity(0.54);
-      //     }
-      //     if (states.contains(MaterialState.disabled)) {
-      //       return Theme.of(context).hintColor;
-      //     }
-      //     return null;
-      //   },
-      // ),
-      // thumbColor: MaterialStatePropertyAll<Color>(
-      //   Theme.of(context).iconTheme.color ?? Colors.black,
-      // ),
       onChanged: (_) => onTap(),
     );
   }

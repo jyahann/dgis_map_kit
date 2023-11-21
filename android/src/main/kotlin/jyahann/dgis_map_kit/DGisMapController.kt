@@ -148,6 +148,15 @@ class DGisMapController(
                     removeLayer(getMethodArgument(args, "layerId"))
                     result.success(null)
                 }
+                "map#setTheme" -> {
+                    var theme: String? = getMethodArgument(args, "theme")
+                    if (theme == "LIGHT") {
+                        gisView.setTheme("day")
+                    } else {
+                        gisView.setTheme("night")
+                    }
+                    result.success(null)
+                }
                 "camera#move" -> {
                     cameraControllerBuilder.controller.get()
                         .moveCamera(call.arguments as Map<String, Any>)
