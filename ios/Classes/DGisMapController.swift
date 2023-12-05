@@ -9,7 +9,7 @@ class DGisMapController : NSObject, FlutterPlatformView {
     private var mapFactory: IMapFactory?;
     private var map: DGis.Map;
     private var mapView: DGis.IMapView;
-    private var sdk: DGis.Container;
+    private static var sdk: DGis.Container?;
     private var methodChannel: FlutterMethodChannel;
     private var markersControllers: Array<MarkersController> = [];
     private var cameraController: CameraController;
@@ -33,15 +33,17 @@ class DGisMapController : NSObject, FlutterPlatformView {
         //        }
         
         //var apiKeyOptions = ApiKeyOptions(apiKeyFile: File(path: filePath));
-        let apiKeys = APIKeys(directory: "dir", map: self.mapConfig.token);
-        self.sdk = DGis.Container(apiKeys: apiKeys!)
+        if DGisMapController.sdk == nil {
+            let apiKeys = APIKeys(directory: "dir", map: self.mapConfig.token);
+            DGisMapController.sdk = DGis.Container(apiKeys: apiKeys!)
+        }
         
         var mapOptions = MapOptions.default;
         //mapOptions.devicePPI = DevicePpi(value: 460.0);
         mapOptions.appearance = .universal(self.mapConfig.theme == "LIGHT" ? "day" : "night");
         mapOptions.position = self.mapConfig.initialCameraPosition;
         do {
-            try self.mapFactory = self.sdk.makeMapFactory(options: mapOptions);
+            try self.mapFactory = DGisMapController.sdk!.makeMapFactory(options: mapOptions);
         } catch {
             NSLog("Error on declaring DGis map factory");
         }
@@ -167,7 +169,7 @@ class DGisMapController : NSObject, FlutterPlatformView {
                 layerId: layerId,
                 registrar: self.registrar,
                 map: self.map,
-                sdk: self.sdk,
+                sdk: DGisMapController.sdk!,
                 methodChannel: self.methodChannel,
                 objectManager: MapObjectManager.withClustering(
                     map: map,
@@ -176,7 +178,7 @@ class DGisMapController : NSObject, FlutterPlatformView {
                     clusterRenderer: LayerRenderer(
                         methodChannel: self.methodChannel,
                         registrar: self.registrar,
-                        sdk: self.sdk,
+                        sdk: DGisMapController.sdk!,
                         layerId: layerId
                     ),
                     layerId: layerId
@@ -192,7 +194,7 @@ class DGisMapController : NSObject, FlutterPlatformView {
                 layerId: layerId,
                 registrar: self.registrar,
                 map: self.map,
-                sdk: self.sdk,
+                sdk: DGisMapController.sdk!,
                 methodChannel: self.methodChannel,
                 objectManager: MapObjectManager.withClustering(
                     map: map,
@@ -205,7 +207,7 @@ class DGisMapController : NSObject, FlutterPlatformView {
                     clusterRenderer: ClusterRenderer(
                         methodChannel: self.methodChannel,
                         registrar: self.registrar,
-                        sdk: self.sdk,
+                        sdk: DGisMapController.sdk!,
                         layerId: layerId
                     ),
                     layerId: layerId
