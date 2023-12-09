@@ -21,11 +21,14 @@ class DGisMapController(
 
     private var gisView: MapView
     private var map: CompletableFuture<ru.dgis.sdk.map.Map>
-    private var sdkContext: ru.dgis.sdk.Context
     private var mapConfig: DGisMapConfig
     private var methodChannel: MethodChannel
     private var markersControllerBuilders: MutableList<MarkersControllerBuilder>
     private var cameraControllerBuilder: CameraControllerBuilder
+
+    companion object {
+        private var sdkContext: ru.dgis.sdk.Context? = null
+    }
 
     override fun getView(): View {
         return gisView
@@ -36,7 +39,9 @@ class DGisMapController(
     }
 
     init {
-        this.sdkContext = initializeDGis(context, mapConfig.token)
+        if (sdkContext == null) {
+            sdkContext = initializeDGis(context, mapConfig.token)
+        }
         this.gisView = MapView(context)
         if (mapConfig.theme == "LIGHT") {
             gisView.setTheme("day")
@@ -85,7 +90,7 @@ class DGisMapController(
         map.whenComplete { map, _ ->
             markersControllerBuilder.build(
                 map = map,
-                sdkContext = this.sdkContext,
+                sdkContext = sdkContext!!,
                 methodChannel = this.methodChannel,
             )
         }
@@ -99,7 +104,7 @@ class DGisMapController(
         map.whenComplete { map, _ ->
             markersControllerBuilder.buildWithClustering(
                 map = map,
-                sdkContext = this.sdkContext,
+                sdkContext = sdkContext!!,
                 methodChannel = this.methodChannel,
                 layerConfig = layerConfig
             )
