@@ -1,3 +1,11 @@
+## 0.0.6, 9 December, 2023
+
+* Just a little readme file fix ;DDDD
+
+## 0.0.5, 9 December, 2023
+
+* Bug fixes
+
 ## 0.0.4, 21 November, 2023
 
 * Added the option to change the theme during execution
