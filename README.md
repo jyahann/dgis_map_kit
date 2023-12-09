@@ -54,7 +54,7 @@ These are instructions for integrating the package into your application.
 Get it by running the following command:
 * With Flutter
   ```sh
-   $ flutter pub add google_maps_flutter
+   $ flutter pub add dgis_map_kit
   ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
