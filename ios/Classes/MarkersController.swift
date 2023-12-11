@@ -2,23 +2,25 @@ import DGis;
 import Flutter;
 
 class MarkersController {
-    var layerId: String?;
-    private var registrar: FlutterPluginRegistrar;
-    private var sdk: DGis.Container;
-    private var methodChannel: FlutterMethodChannel;
-    private var map: DGis.Map;
+    let layerId: String?;
+    private let registrar: FlutterPluginRegistrar;
+    private let sdk: DGis.Container;
+    private let methodChannel: FlutterMethodChannel;
+    private let map: DGis.Map;
     private let objectManager: MapObjectManager;
+    private let imageFactory: DGis.IImageFactory;
     
     private var markersWithId: Dictionary<String, Marker> = [:];
     private var markersWithNoId: Array<Marker> = [];
     
-    init(layerId: String? = nil, registrar: FlutterPluginRegistrar, map: DGis.Map, sdk: DGis.Container, methodChannel: FlutterMethodChannel, objectManager: MapObjectManager) {
+    init(layerId: String? = nil, registrar: FlutterPluginRegistrar, map: DGis.Map, sdk: DGis.Container, methodChannel: FlutterMethodChannel, objectManager: MapObjectManager, imageFactory: DGis.IImageFactory) {
         self.layerId = layerId
         self.registrar = registrar
         self.map = map
         self.sdk = sdk
         self.methodChannel = methodChannel;
         self.objectManager = objectManager;
+        self.imageFactory = imageFactory;
     }
     
     func getAllMarkers() -> Array<Marker> {
@@ -45,7 +47,8 @@ class MarkersController {
             marker: marker as! Dictionary<String, Any?>,
             sdk: self.sdk,
             registrar: self.registrar,
-            layerId: self.layerId
+            layerId: self.layerId,
+            imageFactory: imageFactory
         );
         if (markerId != nil) {
             let oldMarker = getById(markerId: markerId!)

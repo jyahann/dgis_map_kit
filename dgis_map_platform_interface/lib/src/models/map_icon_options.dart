@@ -2,29 +2,29 @@ import 'package:dgis_map_platform_interface/src/models/map_anchor.dart';
 import 'package:dgis_map_platform_interface/src/models/map_icon_text_style.dart';
 
 class MapIconOptions {
-  // Map icon size
+  /// Map icon size
   final double size;
 
-  // Map icon label
+  /// Map icon label
   final String? text;
 
-  // Label style.
+  /// Label style.
   final MapIconTextStyle textStyle;
 
-  // Icon zIndex.
+  /// Icon zIndex.
   final int zIndex;
 
-  // Icon anchor point.
+  /// Icon anchor point.
   final MapAnchor anchor;
 
-  // Icon opacity.
+  /// Icon opacity.
   final double iconOpacity;
 
-  // Rotation angle of the icon on the map
-  // relative to the north direction, clockwise.
+  /// Rotation angle of the icon on the map
+  /// relative to the north direction, clockwise.
   final double? iconMapDirection;
 
-  // Animate the appearance.
+  /// Animate the appearance.
   final bool animatedAppearance;
 
   const MapIconOptions({

@@ -1,4 +1,4 @@
-// Map object's anchor.
+/// Map object's anchor.
 class MapAnchor {
   final double x;
   final double y;

@@ -16,7 +16,8 @@ class CameraController {
             position: CameraUtils.getCameraPositionFromDart(
                 cameraPosition: position["cameraPosition"] as! Dictionary<String, Any>
             ),
-            time: TimeInterval(floatLiteral: (position["durationInMilliseconds"] as! Double) * 0.001)
+            time: TimeInterval(floatLiteral: (position["durationInMilliseconds"] as! Double) * 1000),
+            animationType: CameraAnimationType.fromString(value: position["animationType"] as! String)
         )
     }
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dgis_map_platform_interface/dgis_map_platform_interface.dart';
 import 'package:dgis_map_platform_interface/src/exceptions/layer_exceptions.dart';
+import 'package:dgis_map_platform_interface/src/models/polyline.dart';
 import 'package:dgis_map_platform_interface/src/utils/channel_methods.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -10,24 +11,25 @@ import 'package:flutter/services.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'dart:developer' as log;
 
-// 2Gis Map platform-specific method channel.
+/// 2Gis Map platform-specific method channel.
 class DGisMapMethodChannel extends DGisMapPlatform {
-  // 2Gis Map method channel name.
+  /// 2Gis Map method channel name.
   static const String _viewType = "plugins.jyahann/dgis_map";
 
-  // Map view method channel.
+  /// Map view method channel.
   late MethodChannel _channel;
 
   /// Saved list of [MapLayer] to audit for.
+  // ignore: prefer_final_fields
   List<MapLayer> _layers;
 
-  // Map existing layers getter.
+  /// Map existing layers getter.
   @override
   List<MapLayer> get layers {
     return _layers;
   }
 
-  // User hybrid compoisition flag
+  /// User hybrid compoisition flag
   final bool useHybridComposition;
 
   /// Map [CameraPosition] stream controller.
@@ -77,9 +79,7 @@ class DGisMapMethodChannel extends DGisMapPlatform {
     }
 
     await _channel.invokeMethod(
-      layer is ClustererLayer
-          ? ChannelMethods.addLayerWithClustering
-          : ChannelMethods.addLayer,
+      ChannelMethods.addLayer,
       layer.toJson(),
     );
 
@@ -97,11 +97,12 @@ class DGisMapMethodChannel extends DGisMapPlatform {
     await _channel.invokeMethod(ChannelMethods.removeLayer, {
       "layerId": layerId,
     });
+    _layers.removeWhere((layer) => layer.layerId == layerId);
   }
 
-  // Add list of markers to the map
+  /// Add list of markers to the map
   /// [Marker] id should be unique or null.
-  // If marker with given id already exists, it will be overwritten.
+  /// If marker with given id already exists, it will be overwritten.
   @override
   Future<void> addMarkers(List<Marker> markers, [String? layerId]) async {
     await _channel.invokeMethod(ChannelMethods.addMarkers, {
@@ -124,7 +125,7 @@ class DGisMapMethodChannel extends DGisMapPlatform {
     });
   }
 
-  // Get all markers.
+  /// Get all markers.
   @override
   Future<List<Marker>> getAllMarkers([String? layerId]) async {
     _checkLayerExistence(layerId);
@@ -171,7 +172,7 @@ class DGisMapMethodChannel extends DGisMapPlatform {
   /// It will overwrite the [Marker]
   /// with the specified [markerId] with a new one.
   @override
-  Future<void> update(
+  Future<void> updateMarker(
     String markerId,
     Marker newMarker, [
     String? layerId,
@@ -184,13 +185,101 @@ class DGisMapMethodChannel extends DGisMapPlatform {
     });
   }
 
+  /// Add list of polylines to the map
+  /// [Polyline] id should be unique or null.
+  /// If polyline with given id already exists, it will be overwritten.
+  @override
+  Future<void> addPolylines(List<Polyline> polylines, [String? layerId]) async {
+    await _channel.invokeMethod(ChannelMethods.addPolylines, {
+      "layerId": layerId,
+      "polylines": polylines
+          .map<Map<String, dynamic>>((polyline) => polyline.toJson())
+          .toList(),
+    });
+  }
+
+  /// Add [Polyline] to the map
+  /// [Polyline] id should be unique or null.
+  /// If [Polyline] with given id already exists,
+  /// it will be overwritten.
+  @override
+  Future<void> addPolyline(Polyline polyline, [String? layerId]) async {
+    await _channel.invokeMethod(ChannelMethods.addPolyline, {
+      "layerId": layerId,
+      "polyline": polyline.toJson(),
+    });
+  }
+
+  /// Get all polylines.
+  @override
+  Future<List<Polyline>> getAllPolylines([String? layerId]) async {
+    _checkLayerExistence(layerId);
+    final resp = await _channel.invokeMethod(ChannelMethods.getAllPolylines, {
+      "layerId": layerId,
+    });
+
+    return _getPolilynesFromArguments(resp);
+  }
+
+  /// Get [Polyline] by given [polylineId].
+  /// It will return null if a [Polyline] with
+  /// the specified ID does not exist.
+  @override
+  Future<Polyline?> getPolylineById(String polylineId,
+      [String? layerId]) async {
+    _checkLayerExistence(layerId);
+    final resp = await _channel.invokeMethod(ChannelMethods.getPolylineById, {
+      "layerId": layerId,
+      "polylineId": polylineId,
+    });
+
+    return resp != null
+        ? Polyline.fromJson(_getArgumentDictionary(resp))
+        : null;
+  }
+
+  /// Remove all polylines on layer.
+  @override
+  Future<void> removeAllPolylines([String? layerId]) async {
+    _checkLayerExistence(layerId);
+    await _channel.invokeMethod(ChannelMethods.removeAllPolylines, {
+      "layerId": layerId,
+    });
+  }
+
+  /// Remove [Polyline] by given [polylineId].
+  @override
+  Future<void> removePolylineById(String polylineId, [String? layerId]) async {
+    _checkLayerExistence(layerId);
+    await _channel.invokeMethod(ChannelMethods.removePolylineById, {
+      "layerId": layerId,
+      "polylineId": polylineId,
+    });
+  }
+
+  /// It will overwrite the [Polyline]
+  /// with the specified [polylineId] with a new one.
+  @override
+  Future<void> updatePolyline(
+    String polylineId,
+    Polyline newPolyline, [
+    String? layerId,
+  ]) async {
+    _checkLayerExistence(layerId);
+    await _channel.invokeMethod(ChannelMethods.removePolylineById, {
+      "layerId": layerId,
+      "polylineId": polylineId,
+      "newPolyline": newPolyline.toJson(),
+    });
+  }
+
   /// Moves the map camera to the specified
   /// [CameraPosition] with a defined [duration] and [animationType].
   @override
   Future<void> moveCamera(
     CameraPosition cameraPosition, {
     Duration duration = Duration.zero,
-    CameraAnimationType animationType = CameraAnimationType.DEFAULT,
+    CameraAnimationType animationType = CameraAnimationType.defaultAnimation,
   }) async {
     await _channel.invokeMethod(
       ChannelMethods.moveCamera,
@@ -305,6 +394,15 @@ class DGisMapMethodChannel extends DGisMapPlatform {
     return markers;
   }
 
+  List<Polyline> _getPolilynesFromArguments(dynamic arguments) {
+    List<Polyline> polylines = [];
+    for (var polylineJson in arguments) {
+      final polylineJsonDict = _getArgumentDictionary(polylineJson);
+      polylines.add(Polyline.fromJson(polylineJsonDict));
+    }
+    return polylines;
+  }
+
   Future<dynamic> _handleMethodCall(MethodCall call) async {
     try {
       switch (call.method) {
@@ -335,17 +433,35 @@ class DGisMapMethodChannel extends DGisMapPlatform {
         case ChannelMethods.clusterRender:
           final args = _getArgumentDictionary(call.arguments);
           final layer = layers.firstWhere(
-            (layer) => layer.layerId == args["layerId"],
+            (layer) => layer.layerId == args["layerId"] && layer.withClustering,
           );
 
-          return (layer as ClustererLayer)
-              .builder(_getMarkersFromArguments(args["data"]))
+          return layer.clusterBuilder!(_getMarkersFromArguments(args["data"]))
               .toJson();
         case ChannelMethods.clusterOnTap:
           _mapEventStreamController.add(
             ClusterOnTapEvent(
               layerId: call.arguments["layerId"],
-              markers: _getMarkersFromArguments(call.arguments["data"]),
+              cluster: Cluster.fromJson(
+                _getArgumentDictionary(
+                  call.arguments["data"]["cluster"],
+                ),
+              ),
+              markers:
+                  _getMarkersFromArguments(call.arguments["data"]["marker"]),
+            ),
+          );
+          break;
+        case ChannelMethods.polylineOnTap:
+          final arguments = _getArgumentDictionary(call.arguments);
+          _mapEventStreamController.add(
+            PolylineOnTapEvent(
+              layerId: call.arguments["layerId"],
+              polyline: Polyline.fromJson(
+                _getArgumentDictionary(
+                  arguments["data"],
+                ),
+              ),
             ),
           );
           break;

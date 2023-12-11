@@ -1,4 +1,4 @@
-// A coordinate model with longitude and latitude.
+/// A coordinate model with longitude and latitude.
 class Position {
   final double lat;
   final double long;

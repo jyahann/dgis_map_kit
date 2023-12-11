@@ -42,10 +42,10 @@ class _MyAppState extends State<MyApp> {
               width: double.infinity,
               height: double.infinity,
               child: DGisMap(
-                token: "505d338f-975b-49e0-b4df-04c17dfa0ac3",
+                keyFile: "assets/dgissdk.key",
                 layers: [
                   MapLayer.withClustering(
-                    builder: (markers) => MapClusterer(
+                    clusterBuilder: (markers) => Cluster(
                       icon: "assets/map_cluster_pin.png",
                       iconOptions: MapIconOptions(
                         text: markers.length.toString(),
@@ -53,14 +53,14 @@ class _MyAppState extends State<MyApp> {
                           fontSize: 13.0,
                           color: primaryColor,
                           strokeColor: primaryColor,
-                          textPlacement: MapIconTextPlacement.TOP_CENTER,
+                          textPlacement: MapIconTextPlacement.topCenter,
                           textOffset: -20.0,
                         ),
                       ),
                     ),
                     maxZoom: 20.0,
                     minDistance: 100.0,
-                    onTap: (markers, _) async {
+                    onTap: (markers, cluster, _) async {
                       final cameraPosition = _controller?.currentCameraPosition;
                       if (cameraPosition != null) {
                         final landmark = markers.first;
@@ -71,13 +71,12 @@ class _MyAppState extends State<MyApp> {
                             zoom: cameraPosition.zoom + 2,
                           ),
                           duration: const Duration(milliseconds: 300),
-                          animationType: CameraAnimationType.DEFAULT,
                         );
                       }
                     },
                   ),
                 ],
-                theme: MapTheme.DARK,
+                theme: MapTheme.dark,
                 enableUserLocation: true,
                 onUserLocationChanged: (position) {
                   log.log(
@@ -101,7 +100,7 @@ class _MyAppState extends State<MyApp> {
                   _controller?.moveCamera(
                     CameraPosition(position: position, zoom: 18.0),
                     duration: const Duration(milliseconds: 400),
-                    animationType: CameraAnimationType.SHOW_BOTH_POSITIONS,
+                    animationType: CameraAnimationType.showBothPositions,
                   );
 
                   _controller?.markersController.addMarker(

@@ -1,56 +1,56 @@
 import 'package:flutter/material.dart';
 
 enum MapIconTextPlacement {
-  NO_LABEL,
-  BOTTOM_CENTER,
-  BOTTOM_RIGHT,
-  BOTTOM_LEFT,
-  CIRCLE_BOTTOM_RIGHT,
-  RIGHT_BOTTOM,
-  RIGHT_CENTER,
-  RIGHT_TOP,
-  CIRCLE_TOP_RIGHT,
-  TOP_CENTER,
-  TOP_RIGHT,
-  TOP_LEFT,
-  CIRCLE_TOP_LEFT,
-  LEFT_TOP,
-  LEFT_CENTER,
-  LEFT_BOTTOM,
-  CIRCLE_BOTTOM_LEFT,
-  CENTER_CENTER
+  noLabel,
+  bottomCenter,
+  bottomRight,
+  bottomLeft,
+  circleBottomRight,
+  rightBottom,
+  rightCenter,
+  rightTop,
+  circleTopRight,
+  topCenter,
+  topRight,
+  topLeft,
+  circleTopLeft,
+  leftTop,
+  leftCenter,
+  leftBottom,
+  circleBottomLeft,
+  centerCenter
 }
 
-// Text appearance settings.
+/// Text appearance settings.
 class MapIconTextStyle {
-  // Label font size.
+  /// Label font size.
   final double fontSize;
 
-  // Label color.
+  /// Label color.
   final Color color;
 
-  // Label stroke width.
+  /// Label stroke width.
   final double strokeWidth;
 
-  // Label stroke color.
+  /// Label stroke color.
   final Color strokeColor;
 
-  //    The options for label position relative to the
-  //  icon. The position is determined as follows:
+  ///    The options for label position relative to the
+  ///  icon. The position is determined as follows:
 
-  //    The first part of the enum denotes the area
-  //  relative to which the label position is defined:
-  //  A. "Circle" - means it considers a circle around the marker.
-  //  B. An empty string - means it considers a square.
+  ///    The first part of the enum denotes the area
+  ///  relative to which the label position is defined:
+  ///  A. "Circle" - means it considers a circle around the marker.
+  ///  B. An empty string - means it considers a square.
 
-  //    The second part of the enum defines the zone
-  //  within the area around the marker.
+  ///    The second part of the enum defines the zone
+  ///  within the area around the marker.
 
-  //    The third part of the enum determines the label's
-  //  placement inside the zone.
+  ///    The third part of the enum determines the label's
+  ///  placement inside the zone.
   final MapIconTextPlacement textPlacement;
 
-  // Label offset relative to the icon
+  /// Label offset relative to the icon
   final double textOffset;
 
   const MapIconTextStyle({
@@ -58,7 +58,7 @@ class MapIconTextStyle {
     this.color = Colors.black,
     this.strokeWidth = 0.4,
     this.strokeColor = Colors.black,
-    this.textPlacement = MapIconTextPlacement.BOTTOM_CENTER,
+    this.textPlacement = MapIconTextPlacement.bottomCenter,
     this.textOffset = 0.0,
   });
 

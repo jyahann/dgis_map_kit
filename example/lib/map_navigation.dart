@@ -28,7 +28,6 @@ class MapNavigation extends StatelessWidget {
         ),
       ),
       duration: duration,
-      animationType: CameraAnimationType.DEFAULT,
     );
   }
 

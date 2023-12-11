@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-    <string>Enable my location when in usage</string>
+	<string>Enable my location when in usage</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-    <string>Always enable my location</string>
+	<string>Always enable my location</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>

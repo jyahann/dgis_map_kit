@@ -1,8 +1,8 @@
 PODS:
   - dgis_map_kit (0.0.1):
-    - DGisMobileSDK (= 2.8.0-map)
+    - DGisMobileSDK (= 7.4.0-map)
     - Flutter
-  - DGisMobileSDK (2.8.0-map)
+  - DGisMobileSDK (7.4.0-map)
   - Flutter (1.0.0)
   - integration_test (0.0.1):
     - Flutter
@@ -30,8 +30,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/location/ios"
 
 SPEC CHECKSUMS:
-  dgis_map_kit: c5ada0de00c2c9df4be37a826d6b1fcffcf641b7
-  DGisMobileSDK: a5956ca1a3c2ce0ea558a960395e2129c64d5aab
+  dgis_map_kit: 49868ac95ab76081fd8ee9455f3672c0cc2ae8af
+  DGisMobileSDK: dd94c70e60f23e7cdd34e5afc89c614d217ddd47
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   integration_test: 13825b8a9334a850581300559b8839134b124670
   location: d5cf8598915965547c3f36761ae9cc4f4e87d22e

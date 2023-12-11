@@ -7,6 +7,7 @@ class DGisMapController : NSObject, FlutterPlatformView {
     private var registrar: FlutterPluginRegistrar;
     private var mapConfig: DGisMapConfig;
     private var mapFactory: IMapFactory?;
+    private var imageFactory: IImageFactory?;
     private var map: DGis.Map;
     private var mapView: DGis.IMapView;
     private static var sdk: DGis.Container?;
@@ -34,16 +35,25 @@ class DGisMapController : NSObject, FlutterPlatformView {
         
         //var apiKeyOptions = ApiKeyOptions(apiKeyFile: File(path: filePath));
         if DGisMapController.sdk == nil {
-            let apiKeys = APIKeys(directory: "dir", map: self.mapConfig.token);
-            DGisMapController.sdk = DGis.Container(apiKeys: apiKeys!)
+//            let apiKeys = APIKeys(directory: "dir", map: self.mapConfig.token);
+//            DGisMapController.sdk = DGis.Container(apiKeys: apiKeys!)
+            
+            let assetLookupKey = registrar.lookupKey(forAsset: self.mapConfig.keyFile);
+            
+            // Файл ключа для доступа к сервисам.
+            let apiKeyOptions = ApiKeyOptions(apiKeyFile: File(path: assetLookupKey))
+
+            // Создание контейнера для доступа к возможностям SDK.
+            DGisMapController.sdk = DGis.Container(apiKeyOptions: apiKeyOptions)
         }
         
         var mapOptions = MapOptions.default;
         //mapOptions.devicePPI = DevicePpi(value: 460.0);
-        mapOptions.appearance = .universal(self.mapConfig.theme == "LIGHT" ? "day" : "night");
+        mapOptions.appearance = .universal(self.mapConfig.theme == "light" ? "day" : "night");
         mapOptions.position = self.mapConfig.initialCameraPosition;
         do {
             try self.mapFactory = DGisMapController.sdk!.makeMapFactory(options: mapOptions);
+            try self.imageFactory = DGisMapController.sdk!.makeImageFactory();
         } catch {
             NSLog("Error on declaring DGis map factory");
         }
@@ -162,7 +172,6 @@ class DGisMapController : NSObject, FlutterPlatformView {
         self.renderedObjectsCancellable = cancel;
     }
     
-    
     func addLayer(layerId: String? = nil) {
         self.markersControllers.append(
             MarkersController(
@@ -171,21 +180,39 @@ class DGisMapController : NSObject, FlutterPlatformView {
                 map: self.map,
                 sdk: DGisMapController.sdk!,
                 methodChannel: self.methodChannel,
-                objectManager: MapObjectManager.withClustering(
+                objectManager: MapObjectManager(
                     map: map,
-                    logicalPixel: LogicalPixel(value: 0.5),
-                    maxZoom: Zoom(value: 0.0),
-                    clusterRenderer: LayerRenderer(
-                        methodChannel: self.methodChannel,
-                        registrar: self.registrar,
-                        sdk: DGisMapController.sdk!,
-                        layerId: layerId
-                    ),
                     layerId: layerId
-                )
+                ),
+                imageFactory: imageFactory!
             )
         );
     }
+    
+    
+//    func addLayer(layerId: String? = nil) {
+//        self.markersControllers.append(
+//            MarkersController(
+//                layerId: layerId,
+//                registrar: self.registrar,
+//                map: self.map,
+//                sdk: DGisMapController.sdk!,
+//                methodChannel: self.methodChannel,
+//                objectManager: MapObjectManager.withClustering(
+//                    map: map,
+//                    logicalPixel: LogicalPixel(value: 0.5),
+//                    maxZoom: Zoom(value: 0.0),
+//                    clusterRenderer: LayerRenderer(
+//                        methodChannel: self.methodChannel,
+//                        registrar: self.registrar,
+//                        sdk: DGisMapController.sdk!,
+//                        layerId: layerId
+//                    ),
+//                    layerId: layerId
+//                )
+//            )
+//        );
+//    }
     
     func addLayerWithClustering(layerConfig: Dictionary<String, Any?>) {
         let layerId = layerConfig["layerId"] as? String;
@@ -208,10 +235,12 @@ class DGisMapController : NSObject, FlutterPlatformView {
                         methodChannel: self.methodChannel,
                         registrar: self.registrar,
                         sdk: DGisMapController.sdk!,
+                        imageFactory: imageFactory!,
                         layerId: layerId
                     ),
                     layerId: layerId
-                )
+                ),
+                imageFactory: imageFactory!
             )
         );
     }
@@ -257,7 +286,7 @@ class DGisMapController : NSObject, FlutterPlatformView {
             break;
         case "map#setTheme":
             let theme: String? = getMethodArgument(args: args!, argName: "theme");
-            self.mapView.appearance = .universal(theme == "LIGHT" ? "day" : "night");
+            self.mapView.appearance = .universal(theme == "light" ? "day" : "night");
             break;
         case "camera#move":
             self.cameraController.moveCamera(cameraPosition: args as! Dictionary<String, Any>)

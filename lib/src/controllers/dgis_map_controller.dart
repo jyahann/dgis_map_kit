@@ -57,7 +57,7 @@ class DGisMapController {
   Future<void> moveCamera(
     CameraPosition cameraPosition, {
     Duration duration = Duration.zero,
-    CameraAnimationType animationType = CameraAnimationType.DEFAULT,
+    CameraAnimationType animationType = CameraAnimationType.defaultAnimation,
   }) async {
     await _dGisMapPlatform.moveCamera(
       cameraPosition,

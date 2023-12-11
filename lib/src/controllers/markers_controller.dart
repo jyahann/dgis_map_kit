@@ -44,5 +44,5 @@ class MarkersController {
   /// It will overwrite the [Marker]
   /// with the specified [markerId] with a new one.
   Future<void> update(String markerId, Marker newMarker, [String? layerId]) =>
-      _dGisMapPlatform.update(markerId, newMarker, layerId);
+      _dGisMapPlatform.updateMarker(markerId, newMarker, layerId);
 }

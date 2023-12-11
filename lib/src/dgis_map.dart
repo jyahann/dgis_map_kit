@@ -53,12 +53,21 @@ class DGisMap extends StatefulWidget {
 
   DGisMap({
     super.key,
-    required String token,
+
+    /// ...
+    required String keyFile,
+
+    ///
     required CameraPosition initialCameraPosition,
+
+    ///
     List<MapLayer> layers = const [
       MapLayer(),
     ],
-    MapTheme theme = MapTheme.LIGHT,
+
+    ///
+    MapTheme theme = MapTheme.light,
+
     this.mapOnTap,
     this.markerOnTap,
     this.mapOnReady,
@@ -67,7 +76,7 @@ class DGisMap extends StatefulWidget {
     this.onUserLocationChanged,
     this.enableUserLocation = false,
   }) : mapConfig = MapConfig(
-          token: token,
+          keyFile: keyFile,
           initialCameraPosition: initialCameraPosition,
           layers: layers,
           theme: theme,
@@ -186,10 +195,14 @@ class _DGisMapState extends State<DGisMap> {
 
     _dGisMapPlatform.on<ClusterOnTapEvent>((event) {
       for (var layer in _dGisMapPlatform.layers) {
-        if (layer is ClustererLayer &&
+        if (layer.withClustering &&
             layer.layerId == event.layerId &&
             layer.onTap != null) {
-          layer.onTap!(event.markers, event.layerId);
+          layer.onTap!(
+            event.markers,
+            event.cluster,
+            event.layerId,
+          );
         }
       }
     });

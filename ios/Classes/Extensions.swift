@@ -16,44 +16,56 @@ import DGis;
 extension DGis.TextPlacement {
     static func fromString(value val: String) -> DGis.TextPlacement {
         switch val {
-        case "NO_LABEL":
-            return DGis.TextPlacement.noLabel;
-        case "BOTTOM_CENTER":
+        case "bottomCenter":
             return DGis.TextPlacement.bottomCenter;
-        case "BOTTOM_RIGHT":
+        case "bottomRight":
             return DGis.TextPlacement.bottomRight;
-        case "BOTTOM_LEFT":
+        case "bottomLeft":
             return DGis.TextPlacement.bottomLeft;
-        case "CIRCLE_BOTTOM_RIGHT":
+        case "circleBottomRight":
             return DGis.TextPlacement.circleBottomRight;
-        case "RIGHT_BOTTOM":
+        case "rightBottom":
             return DGis.TextPlacement.rightBottom;
-        case "RIGHT_CENTER":
+        case "rightCenter":
             return DGis.TextPlacement.rightCenter;
-        case "RIGHT_TOP":
+        case "rightTop":
             return DGis.TextPlacement.rightTop;
-        case "CIRCLE_TOP_RIGHT":
+        case "circleTopRight":
             return DGis.TextPlacement.circleTopRight;
-        case "TOP_CENTER":
+        case "topCenter":
             return DGis.TextPlacement.topCenter;
-        case "TOP_RIGHT":
+        case "topRight":
             return DGis.TextPlacement.topRight;
-        case "TOP_LEFT":
+        case "topLeft":
             return DGis.TextPlacement.topLeft;
-        case "CIRCLE_TOP_LEFT":
+        case "circleTopLeft":
             return DGis.TextPlacement.circleTopLeft;
-        case "LEFT_TOP":
+        case "leftTop":
             return DGis.TextPlacement.leftTop;
-        case "LEFT_CENTER":
+        case "leftCenter":
             return DGis.TextPlacement.leftCenter;
-        case "LEFT_BOTTOM":
+        case "leftBottom":
             return DGis.TextPlacement.leftBottom;
-        case "CIRCLE_BOTTOM_LEFT":
+        case "circleBottomLeft":
             return DGis.TextPlacement.circleBottomLeft;
-        case "CENTER_CENTER":
+        case "centerCenter":
             return DGis.TextPlacement.centerCenter;
         default:
             return DGis.TextPlacement.noLabel;
         }
     }
 }
+
+extension DGis.CameraAnimationType {
+    static func fromString(value val: String) -> DGis.CameraAnimationType {
+        switch val {
+        case "linear":
+            return DGis.CameraAnimationType.linear;
+        case "showBothPositions":
+            return DGis.CameraAnimationType.showBothPositions;
+        default:
+            return DGis.CameraAnimationType.default;
+        }
+    }
+}
+

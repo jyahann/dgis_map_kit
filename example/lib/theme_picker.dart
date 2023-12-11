@@ -63,7 +63,7 @@ class _ThemePickerState extends State<ThemePicker> {
   }
 
   onTap() {
-    widget.onThemeChange(!inDarkMode ? MapTheme.DARK : MapTheme.LIGHT);
+    widget.onThemeChange(!inDarkMode ? MapTheme.dark : MapTheme.light);
     setState(() {
       inDarkMode = !inDarkMode;
     });

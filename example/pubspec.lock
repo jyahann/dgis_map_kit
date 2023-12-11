@@ -55,14 +55,14 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.0.3"
+    version: "0.0.4"
   dgis_map_platform_interface:
     dependency: "direct overridden"
     description:
       path: "../dgis_map_platform_interface"
       relative: true
     source: path
-    version: "0.0.1"
+    version: "0.0.2"
   fake_async:
     dependency: transitive
     description:

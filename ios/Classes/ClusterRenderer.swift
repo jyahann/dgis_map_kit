@@ -6,12 +6,14 @@ final class ClusterRenderer: SimpleClusterRenderer {
     private var registrar: FlutterPluginRegistrar;
     private var sdk: DGis.Container;
     private var layerId: String?;
+    private var imageFactory: IImageFactory;
     
-    init(methodChannel: FlutterMethodChannel, registrar: FlutterPluginRegistrar, sdk: DGis.Container, layerId: String? = nil) {
+    init(methodChannel: FlutterMethodChannel, registrar: FlutterPluginRegistrar, sdk: DGis.Container, imageFactory: IImageFactory, layerId: String? = nil) {
         self.methodChannel = methodChannel
         self.registrar = registrar
         self.sdk = sdk
         self.layerId = layerId
+        self.imageFactory = imageFactory
     }
     
     func renderCluster(cluster: SimpleClusterObject) -> SimpleClusterOptions {
@@ -40,7 +42,8 @@ final class ClusterRenderer: SimpleClusterRenderer {
                         sdk: self.sdk,
                         registrar: self.registrar,
                         markers: markers,
-                        layerId: self.layerId
+                        layerId: self.layerId,
+                        imageFactory: self.imageFactory
                     )
                     semaphore.signal();
                 }

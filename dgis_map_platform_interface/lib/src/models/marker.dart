@@ -1,28 +1,28 @@
 import 'package:dgis_map_platform_interface/src/models/map_icon_options.dart';
 import 'package:dgis_map_platform_interface/src/models/position.dart';
 
-// A marker model that contains settings for rendering on the map.
+/// A marker model that contains settings for rendering on the map.
 class Marker {
-  // ID should be unique or null.
-  // If the ID is null, the search, deletion,
-  // and update of the marker will not be carried out.
-  // If marker with given id already exists, it will be overwritten.
+  /// ID should be unique or null.
+  /// If the ID is null, the search, deletion,
+  /// and update of the marker will not be carried out.
+  /// If marker with given id already exists, it will be overwritten.
   final String? id;
 
-  // Marker's position on map.
+  /// Marker's position on map.
   final Position position;
 
-  // Marker's icon based on its asset.
+  /// Marker's icon based on its asset.
   final String icon;
 
-  // Marker's icon options.
+  /// Marker's icon options.
   final MapIconOptions iconOptions;
 
-  // Elevation in meters above
-  // the ground surface, not above sea level.
+  /// Elevation in meters above
+  /// the ground surface, not above sea level.
   final double elevation;
 
-  // The data that will be saved and retrieved in map events.
+  /// The data that will be saved and retrieved in map events.
   final Map<String, dynamic>? data;
 
   const Marker({

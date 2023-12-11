@@ -1,4 +1,5 @@
 import 'package:dgis_map_platform_interface/dgis_map_platform_interface.dart';
+import 'package:dgis_map_platform_interface/src/models/polyline.dart';
 
 // Map events.
 abstract class MapEvent {
@@ -27,11 +28,23 @@ class MarkersOnTapEvent extends MapEvent {
 
 class ClusterOnTapEvent extends MapEvent {
   final String? layerId;
+  final Cluster cluster;
   final List<Marker> markers;
 
   const ClusterOnTapEvent({
     this.layerId,
+    required this.cluster,
     required this.markers,
+  });
+}
+
+class PolylineOnTapEvent extends MapEvent {
+  final String? layerId;
+  final Polyline polyline;
+
+  const PolylineOnTapEvent({
+    this.layerId,
+    required this.polyline,
   });
 }
 
