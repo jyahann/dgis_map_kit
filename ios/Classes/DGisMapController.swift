@@ -13,6 +13,7 @@ class DGisMapController : NSObject, FlutterPlatformView {
     private static var sdk: DGis.Container?;
     private var methodChannel: FlutterMethodChannel;
     private var markersControllers: Array<MarkersController> = [];
+    private var polylinesControllers: Array<PolylinesController> = [];
     private var cameraController: CameraController;
     private var cameraStateCancellable: Cancellable?;
     private var renderedObjectsCancellable: Cancellable?;
@@ -78,6 +79,7 @@ class DGisMapController : NSObject, FlutterPlatformView {
                 );
             }
         }
+        self.cameraStateCancellable?.cancel()
         
         let singleTapGesture = UITapGestureRecognizer(target: self, action: #selector(self.singleTap(_:)))
         singleTapGesture.numberOfTapsRequired = 1;
@@ -173,6 +175,11 @@ class DGisMapController : NSObject, FlutterPlatformView {
     }
     
     func addLayer(layerId: String? = nil) {
+        var objectManager = MapObjectManager(
+            map: map,
+            layerId: layerId
+        )
+        
         self.markersControllers.append(
             MarkersController(
                 layerId: layerId,
@@ -180,13 +187,12 @@ class DGisMapController : NSObject, FlutterPlatformView {
                 map: self.map,
                 sdk: DGisMapController.sdk!,
                 methodChannel: self.methodChannel,
-                objectManager: MapObjectManager(
-                    map: map,
-                    layerId: layerId
-                ),
+                objectManager: objectManager,
                 imageFactory: imageFactory!
             )
         );
+        
+        self.polylinesControllers.append(PolylinesController(map: map, sdk: <#T##Container#>, methodChannel: <#T##FlutterMethodChannel#>, objectManager: <#T##MapObjectManager#>))
     }
     
     

@@ -2,7 +2,7 @@ import 'package:dgis_map_platform_interface/dgis_map_platform_interface.dart';
 import 'package:dgis_map_platform_interface/src/models/polyline.dart';
 
 // Map events.
-abstract class MapEvent {
+sealed class MapEvent {
   const MapEvent();
 }
 

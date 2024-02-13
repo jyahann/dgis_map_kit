@@ -1,11 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Map widget creation options.
-@immutable
-class MapWidgetOptions {
+base class MapWidgetOptions {
   final MessageCodec<dynamic> creationParamsCodec;
 
   final TextDirection textDirection;

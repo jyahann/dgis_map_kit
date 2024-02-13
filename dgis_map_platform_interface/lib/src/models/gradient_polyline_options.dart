@@ -6,8 +6,8 @@ class GradientPolylineOptions {
   final double gradientLength;
   final Color borderColor;
   final Color secondBorderColor;
-  final List<Color> colors;
-  final List<int> colorIndices;
+  final Set<Color> colors;
+  final List<int> colorStops;
 
   GradientPolylineOptions({
     required this.borderWidth,
@@ -16,7 +16,7 @@ class GradientPolylineOptions {
     required this.borderColor,
     required this.secondBorderColor,
     required this.colors,
-    required this.colorIndices,
+    required this.colorStops,
   });
 
   Map<String, dynamic> toJson() => {
@@ -25,8 +25,8 @@ class GradientPolylineOptions {
         "gradientLength": gradientLength,
         "borderColor": borderColor.value,
         "secondBorderColor": secondBorderColor.value,
-        'colors': colors.map<int>((e) => e.value),
-        "colorIndices": colorIndices,
+        "colors": colors.map((e) => e.value).toSet(),
+        "colorStops": colorStops,
       };
 
   GradientPolylineOptions.fromJson(Map<String, dynamic> json)
@@ -35,10 +35,7 @@ class GradientPolylineOptions {
         gradientLength = json["gradientLength"],
         borderColor = Color(json["borderColor"]),
         secondBorderColor = Color(json["secondBorderColor"]),
-        colors = (json["colors"] as List<int>)
-            .map<Color>(
-              (e) => Color(e),
-            )
-            .toList(),
-        colorIndices = json["colorIndices"];
+        colors = (json["colors"] as Set<int>).map((e) => Color(e)).toSet(),
+        colorStops = json["colorStops"];
+
 }
