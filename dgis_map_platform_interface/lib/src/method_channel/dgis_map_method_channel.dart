@@ -482,4 +482,10 @@ class DGisMapMethodChannel extends DGisMapPlatform {
       log.log("Error on holding DGis method call", name: e.toString());
     }
   }
+  
+  // Closes connection with map
+  @override
+  Future<void> close() async {
+    await _channel.invokeMethod(ChannelMethods.mapClose);
+  }
 }

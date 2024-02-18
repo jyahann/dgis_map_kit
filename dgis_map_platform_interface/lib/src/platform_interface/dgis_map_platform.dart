@@ -115,6 +115,9 @@ abstract class DGisMapPlatform {
   /// Set [MapTheme] to the map
   Future<void> setTheme(MapTheme theme);
 
+  /// Closes connection with map
+  Future<void> close();
+
   /// Moves the map camera to the specified
   /// [CameraPosition] with a defined [duration] and [animationType].
   Future<void> moveCamera(

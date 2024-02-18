@@ -70,4 +70,9 @@ class DGisMapController {
   Future<void> setTheme(MapTheme theme) async {
     await _dGisMapPlatform.setTheme(theme);
   }
+
+  // Closes connection with map
+  Future<void> close() async {
+    await _dGisMapPlatform.close();
+  }
 }

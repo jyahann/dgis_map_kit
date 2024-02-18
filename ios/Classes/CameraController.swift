@@ -16,8 +16,14 @@ class CameraController {
             position: CameraUtils.getCameraPositionFromDart(
                 cameraPosition: position["cameraPosition"] as! Dictionary<String, Any>
             ),
-            time: TimeInterval(floatLiteral: (position["durationInMilliseconds"] as! Double) * 1000),
+            time: TimeInterval(floatLiteral: (position["durationInMilliseconds"] as! Double) * 0.001),
             animationType: CameraAnimationType.fromString(value: position["animationType"] as! String)
         )
+        
+        let sink = cameraMoveCancellable!.sink { _ in
+            print("Перелет камеры завершён.")
+        } failure: { error in
+            print("Возникла ошибка: \(error.localizedDescription)")
+        }
     }
 }

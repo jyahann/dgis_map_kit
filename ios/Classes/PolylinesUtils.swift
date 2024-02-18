@@ -6,7 +6,7 @@ class PolylinesUtils {
         polyline: Dictionary<String, Any?>,
         sdk: DGis.Container,
         layerId: String?
-    ) -> Polyline {
+    ) -> Polyline? {
         var dashedOptions: DashedPolylineOptions?;
         var gradientOptions: GradientPolylineOptions?;
         
@@ -29,7 +29,11 @@ class PolylinesUtils {
             zIndex: ZIndex(value: UInt32(polyline["zIndex"] as! Int))
         );
         
-        return Polyline(options: options);
+        do {
+            return try Polyline(options: options);
+        } catch {
+            return nil
+        }
     }
     
     static func getDashedPolylineOptionsFromDart(dashedPolylineOptions: Dictionary<String, Any>) -> DashedPolylineOptions {

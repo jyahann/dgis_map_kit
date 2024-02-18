@@ -3,6 +3,7 @@ class ChannelMethods {
   // incoming
   static const String mapIsReady = "map#isReady";
   static const String mapOnTap = "map#onTap";
+  static const String mapClose = "map#close";
   static const String markersOnTap = "markers#onTap";
   static const String clusterRender = "cluster#render";
   static const String clusterOnTap = "cluster#onTap";

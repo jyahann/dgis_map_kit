@@ -20,7 +20,8 @@ class MapNavigation extends StatelessWidget {
         : (double zoom) => zoom - 1.5;
     const duration = Duration(milliseconds: 200);
     final cameraPosition = mapController.currentCameraPosition;
-    mapController.moveCamera(
+
+    await mapController.moveCamera(
       CameraPosition(
         position: cameraPosition.position,
         zoom: getZoom(
@@ -43,7 +44,7 @@ class MapNavigation extends StatelessWidget {
             shape: const CircleBorder(),
             color: Colors.black.withOpacity(0.9),
             child: InkWell(
-              onTap: () => zoom(ZoomDirection.increase),
+              onTap: () async=> await zoom(ZoomDirection.increase),
               borderRadius: BorderRadius.circular(20.0),
               child: const Padding(
                 padding: EdgeInsets.all(8.0),

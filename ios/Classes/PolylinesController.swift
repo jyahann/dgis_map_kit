@@ -51,9 +51,9 @@ class PolylinesController {
             }
             polylinesWithId[polylineId!] = polyline
         } else {
-            polylinesWithNoId.append(polyline)
+            polylinesWithNoId.append(polyline!)
         }
-        return polyline
+        return polyline!
     }
     
     func addPolyline(polyline: Dictionary<String, Any?>) {

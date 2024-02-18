@@ -57,9 +57,9 @@ class MarkersController {
             }
             markersWithId[markerId!] = marker
         } else {
-            markersWithNoId.append(marker)
+            markersWithNoId.append(marker!)
         }
-        return marker
+        return marker!
     }
     
     func addMarker(marker: Dictionary<String, Any?>) {
