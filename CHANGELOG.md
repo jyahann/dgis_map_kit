@@ -1,3 +1,7 @@
+## 0.0.7, 1 May, 2025
+
+* Ти в администрации не работаэш
+
 ## 0.0.6, 9 December, 2023
 
 * Just a little readme file fix ;DDDD
