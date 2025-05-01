@@ -1,5 +1,9 @@
 <a name="readme-top"></a>
 
+## Warning
+
+This plugin is no longer supported. Please use the official 2GIS plugin for Flutter: https://pub.dev/packages/dgis_mobile_sdk_full
+
 <!-- TABLE OF CONTENTS -->
 <details>
   <summary>Table of Contents</summary>
@@ -224,12 +228,3 @@ return DGisMap(
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- CONTACT -->
-## Contact
-
-jyahann - [@jyahann](https://t.me/jyahann) - raishi24e@gmail.com
-
-Project Link: [https://github.com/jyahann/dgis_map_kit.git](https://github.com/jyahann/dgis_map_kit.git)
